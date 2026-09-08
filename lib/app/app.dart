@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../features/home/presentation/pages/home_page.dart';
+import '../features/projects/presentation/pages/projects_list_page.dart';
 
 class ObraControlApp extends StatelessWidget {
   const ObraControlApp({super.key});
@@ -9,7 +9,7 @@ class ObraControlApp extends StatelessWidget {
     return MaterialApp(
       title: 'ObraControl',
       theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.orange),
-      home: const HomePage(),
+      home: const ProjectsListPage(),
     );
   }
 }
