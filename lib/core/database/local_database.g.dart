@@ -1073,16 +1073,2220 @@ class ProjectsCompanion extends UpdateCompanion<Project> {
   }
 }
 
+class $DailyRecordsTable extends DailyRecords
+    with TableInfo<$DailyRecordsTable, DailyRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DailyRecordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _observationsMeta = const VerificationMeta(
+    'observations',
+  );
+  @override
+  late final GeneratedColumn<String> observations = GeneratedColumn<String>(
+    'observations',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<SyncStatus, int> syncStatus =
+      GeneratedColumn<int>(
+        'sync_status',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      ).withConverter<SyncStatus>($DailyRecordsTable.$convertersyncStatus);
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    projectId,
+    date,
+    description,
+    observations,
+    createdAt,
+    updatedAt,
+    syncStatus,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'daily_records';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DailyRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('observations')) {
+      context.handle(
+        _observationsMeta,
+        observations.isAcceptableOrUnknown(
+          data['observations']!,
+          _observationsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DailyRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DailyRecord(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}date'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      observations: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}observations'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      syncStatus: $DailyRecordsTable.$convertersyncStatus.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}sync_status'],
+        )!,
+      ),
+    );
+  }
+
+  @override
+  $DailyRecordsTable createAlias(String alias) {
+    return $DailyRecordsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<SyncStatus, int, int> $convertersyncStatus =
+      const EnumIndexConverter<SyncStatus>(SyncStatus.values);
+}
+
+class DailyRecord extends DataClass implements Insertable<DailyRecord> {
+  final String id;
+  final String projectId;
+  final DateTime date;
+  final String description;
+  final String? observations;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final SyncStatus syncStatus;
+  const DailyRecord({
+    required this.id,
+    required this.projectId,
+    required this.date,
+    required this.description,
+    this.observations,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.syncStatus,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['date'] = Variable<DateTime>(date);
+    map['description'] = Variable<String>(description);
+    if (!nullToAbsent || observations != null) {
+      map['observations'] = Variable<String>(observations);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    {
+      map['sync_status'] = Variable<int>(
+        $DailyRecordsTable.$convertersyncStatus.toSql(syncStatus),
+      );
+    }
+    return map;
+  }
+
+  DailyRecordsCompanion toCompanion(bool nullToAbsent) {
+    return DailyRecordsCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      date: Value(date),
+      description: Value(description),
+      observations: observations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(observations),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      syncStatus: Value(syncStatus),
+    );
+  }
+
+  factory DailyRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DailyRecord(
+      id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      date: serializer.fromJson<DateTime>(json['date']),
+      description: serializer.fromJson<String>(json['description']),
+      observations: serializer.fromJson<String?>(json['observations']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      syncStatus: $DailyRecordsTable.$convertersyncStatus.fromJson(
+        serializer.fromJson<int>(json['syncStatus']),
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'date': serializer.toJson<DateTime>(date),
+      'description': serializer.toJson<String>(description),
+      'observations': serializer.toJson<String?>(observations),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'syncStatus': serializer.toJson<int>(
+        $DailyRecordsTable.$convertersyncStatus.toJson(syncStatus),
+      ),
+    };
+  }
+
+  DailyRecord copyWith({
+    String? id,
+    String? projectId,
+    DateTime? date,
+    String? description,
+    Value<String?> observations = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    SyncStatus? syncStatus,
+  }) => DailyRecord(
+    id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
+    date: date ?? this.date,
+    description: description ?? this.description,
+    observations: observations.present ? observations.value : this.observations,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    syncStatus: syncStatus ?? this.syncStatus,
+  );
+  DailyRecord copyWithCompanion(DailyRecordsCompanion data) {
+    return DailyRecord(
+      id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      date: data.date.present ? data.date.value : this.date,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      observations: data.observations.present
+          ? data.observations.value
+          : this.observations,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      syncStatus: data.syncStatus.present
+          ? data.syncStatus.value
+          : this.syncStatus,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DailyRecord(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('date: $date, ')
+          ..write('description: $description, ')
+          ..write('observations: $observations, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('syncStatus: $syncStatus')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    projectId,
+    date,
+    description,
+    observations,
+    createdAt,
+    updatedAt,
+    syncStatus,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DailyRecord &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.date == this.date &&
+          other.description == this.description &&
+          other.observations == this.observations &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.syncStatus == this.syncStatus);
+}
+
+class DailyRecordsCompanion extends UpdateCompanion<DailyRecord> {
+  final Value<String> id;
+  final Value<String> projectId;
+  final Value<DateTime> date;
+  final Value<String> description;
+  final Value<String?> observations;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<SyncStatus> syncStatus;
+  final Value<int> rowid;
+  const DailyRecordsCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.date = const Value.absent(),
+    this.description = const Value.absent(),
+    this.observations = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DailyRecordsCompanion.insert({
+    required String id,
+    required String projectId,
+    required DateTime date,
+    required String description,
+    this.observations = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    required SyncStatus syncStatus,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       projectId = Value(projectId),
+       date = Value(date),
+       description = Value(description),
+       syncStatus = Value(syncStatus);
+  static Insertable<DailyRecord> custom({
+    Expression<String>? id,
+    Expression<String>? projectId,
+    Expression<DateTime>? date,
+    Expression<String>? description,
+    Expression<String>? observations,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? syncStatus,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (date != null) 'date': date,
+      if (description != null) 'description': description,
+      if (observations != null) 'observations': observations,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (syncStatus != null) 'sync_status': syncStatus,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DailyRecordsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? projectId,
+    Value<DateTime>? date,
+    Value<String>? description,
+    Value<String?>? observations,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<SyncStatus>? syncStatus,
+    Value<int>? rowid,
+  }) {
+    return DailyRecordsCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      date: date ?? this.date,
+      description: description ?? this.description,
+      observations: observations ?? this.observations,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      syncStatus: syncStatus ?? this.syncStatus,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (observations.present) {
+      map['observations'] = Variable<String>(observations.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (syncStatus.present) {
+      map['sync_status'] = Variable<int>(
+        $DailyRecordsTable.$convertersyncStatus.toSql(syncStatus.value),
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DailyRecordsCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('date: $date, ')
+          ..write('description: $description, ')
+          ..write('observations: $observations, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MaterialEntriesTable extends MaterialEntries
+    with TableInfo<$MaterialEntriesTable, MaterialEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MaterialEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _materialNameMeta = const VerificationMeta(
+    'materialName',
+  );
+  @override
+  late final GeneratedColumn<String> materialName = GeneratedColumn<String>(
+    'material_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _quantityMeta = const VerificationMeta(
+    'quantity',
+  );
+  @override
+  late final GeneratedColumn<double> quantity = GeneratedColumn<double>(
+    'quantity',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _unitMeta = const VerificationMeta('unit');
+  @override
+  late final GeneratedColumn<String> unit = GeneratedColumn<String>(
+    'unit',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _observationsMeta = const VerificationMeta(
+    'observations',
+  );
+  @override
+  late final GeneratedColumn<String> observations = GeneratedColumn<String>(
+    'observations',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<SyncStatus, int> syncStatus =
+      GeneratedColumn<int>(
+        'sync_status',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      ).withConverter<SyncStatus>($MaterialEntriesTable.$convertersyncStatus);
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    projectId,
+    date,
+    materialName,
+    quantity,
+    unit,
+    observations,
+    createdAt,
+    syncStatus,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'material_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MaterialEntry> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('material_name')) {
+      context.handle(
+        _materialNameMeta,
+        materialName.isAcceptableOrUnknown(
+          data['material_name']!,
+          _materialNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_materialNameMeta);
+    }
+    if (data.containsKey('quantity')) {
+      context.handle(
+        _quantityMeta,
+        quantity.isAcceptableOrUnknown(data['quantity']!, _quantityMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_quantityMeta);
+    }
+    if (data.containsKey('unit')) {
+      context.handle(
+        _unitMeta,
+        unit.isAcceptableOrUnknown(data['unit']!, _unitMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_unitMeta);
+    }
+    if (data.containsKey('observations')) {
+      context.handle(
+        _observationsMeta,
+        observations.isAcceptableOrUnknown(
+          data['observations']!,
+          _observationsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MaterialEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MaterialEntry(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}date'],
+      )!,
+      materialName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}material_name'],
+      )!,
+      quantity: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}quantity'],
+      )!,
+      unit: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}unit'],
+      )!,
+      observations: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}observations'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      syncStatus: $MaterialEntriesTable.$convertersyncStatus.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}sync_status'],
+        )!,
+      ),
+    );
+  }
+
+  @override
+  $MaterialEntriesTable createAlias(String alias) {
+    return $MaterialEntriesTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<SyncStatus, int, int> $convertersyncStatus =
+      const EnumIndexConverter<SyncStatus>(SyncStatus.values);
+}
+
+class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
+  final String id;
+  final String projectId;
+  final DateTime date;
+  final String materialName;
+  final double quantity;
+  final String unit;
+  final String? observations;
+  final DateTime createdAt;
+  final SyncStatus syncStatus;
+  const MaterialEntry({
+    required this.id,
+    required this.projectId,
+    required this.date,
+    required this.materialName,
+    required this.quantity,
+    required this.unit,
+    this.observations,
+    required this.createdAt,
+    required this.syncStatus,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['date'] = Variable<DateTime>(date);
+    map['material_name'] = Variable<String>(materialName);
+    map['quantity'] = Variable<double>(quantity);
+    map['unit'] = Variable<String>(unit);
+    if (!nullToAbsent || observations != null) {
+      map['observations'] = Variable<String>(observations);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    {
+      map['sync_status'] = Variable<int>(
+        $MaterialEntriesTable.$convertersyncStatus.toSql(syncStatus),
+      );
+    }
+    return map;
+  }
+
+  MaterialEntriesCompanion toCompanion(bool nullToAbsent) {
+    return MaterialEntriesCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      date: Value(date),
+      materialName: Value(materialName),
+      quantity: Value(quantity),
+      unit: Value(unit),
+      observations: observations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(observations),
+      createdAt: Value(createdAt),
+      syncStatus: Value(syncStatus),
+    );
+  }
+
+  factory MaterialEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MaterialEntry(
+      id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      date: serializer.fromJson<DateTime>(json['date']),
+      materialName: serializer.fromJson<String>(json['materialName']),
+      quantity: serializer.fromJson<double>(json['quantity']),
+      unit: serializer.fromJson<String>(json['unit']),
+      observations: serializer.fromJson<String?>(json['observations']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      syncStatus: $MaterialEntriesTable.$convertersyncStatus.fromJson(
+        serializer.fromJson<int>(json['syncStatus']),
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'date': serializer.toJson<DateTime>(date),
+      'materialName': serializer.toJson<String>(materialName),
+      'quantity': serializer.toJson<double>(quantity),
+      'unit': serializer.toJson<String>(unit),
+      'observations': serializer.toJson<String?>(observations),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'syncStatus': serializer.toJson<int>(
+        $MaterialEntriesTable.$convertersyncStatus.toJson(syncStatus),
+      ),
+    };
+  }
+
+  MaterialEntry copyWith({
+    String? id,
+    String? projectId,
+    DateTime? date,
+    String? materialName,
+    double? quantity,
+    String? unit,
+    Value<String?> observations = const Value.absent(),
+    DateTime? createdAt,
+    SyncStatus? syncStatus,
+  }) => MaterialEntry(
+    id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
+    date: date ?? this.date,
+    materialName: materialName ?? this.materialName,
+    quantity: quantity ?? this.quantity,
+    unit: unit ?? this.unit,
+    observations: observations.present ? observations.value : this.observations,
+    createdAt: createdAt ?? this.createdAt,
+    syncStatus: syncStatus ?? this.syncStatus,
+  );
+  MaterialEntry copyWithCompanion(MaterialEntriesCompanion data) {
+    return MaterialEntry(
+      id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      date: data.date.present ? data.date.value : this.date,
+      materialName: data.materialName.present
+          ? data.materialName.value
+          : this.materialName,
+      quantity: data.quantity.present ? data.quantity.value : this.quantity,
+      unit: data.unit.present ? data.unit.value : this.unit,
+      observations: data.observations.present
+          ? data.observations.value
+          : this.observations,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      syncStatus: data.syncStatus.present
+          ? data.syncStatus.value
+          : this.syncStatus,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MaterialEntry(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('date: $date, ')
+          ..write('materialName: $materialName, ')
+          ..write('quantity: $quantity, ')
+          ..write('unit: $unit, ')
+          ..write('observations: $observations, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('syncStatus: $syncStatus')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    projectId,
+    date,
+    materialName,
+    quantity,
+    unit,
+    observations,
+    createdAt,
+    syncStatus,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MaterialEntry &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.date == this.date &&
+          other.materialName == this.materialName &&
+          other.quantity == this.quantity &&
+          other.unit == this.unit &&
+          other.observations == this.observations &&
+          other.createdAt == this.createdAt &&
+          other.syncStatus == this.syncStatus);
+}
+
+class MaterialEntriesCompanion extends UpdateCompanion<MaterialEntry> {
+  final Value<String> id;
+  final Value<String> projectId;
+  final Value<DateTime> date;
+  final Value<String> materialName;
+  final Value<double> quantity;
+  final Value<String> unit;
+  final Value<String?> observations;
+  final Value<DateTime> createdAt;
+  final Value<SyncStatus> syncStatus;
+  final Value<int> rowid;
+  const MaterialEntriesCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.date = const Value.absent(),
+    this.materialName = const Value.absent(),
+    this.quantity = const Value.absent(),
+    this.unit = const Value.absent(),
+    this.observations = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MaterialEntriesCompanion.insert({
+    required String id,
+    required String projectId,
+    required DateTime date,
+    required String materialName,
+    required double quantity,
+    required String unit,
+    this.observations = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    required SyncStatus syncStatus,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       projectId = Value(projectId),
+       date = Value(date),
+       materialName = Value(materialName),
+       quantity = Value(quantity),
+       unit = Value(unit),
+       syncStatus = Value(syncStatus);
+  static Insertable<MaterialEntry> custom({
+    Expression<String>? id,
+    Expression<String>? projectId,
+    Expression<DateTime>? date,
+    Expression<String>? materialName,
+    Expression<double>? quantity,
+    Expression<String>? unit,
+    Expression<String>? observations,
+    Expression<DateTime>? createdAt,
+    Expression<int>? syncStatus,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (date != null) 'date': date,
+      if (materialName != null) 'material_name': materialName,
+      if (quantity != null) 'quantity': quantity,
+      if (unit != null) 'unit': unit,
+      if (observations != null) 'observations': observations,
+      if (createdAt != null) 'created_at': createdAt,
+      if (syncStatus != null) 'sync_status': syncStatus,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MaterialEntriesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? projectId,
+    Value<DateTime>? date,
+    Value<String>? materialName,
+    Value<double>? quantity,
+    Value<String>? unit,
+    Value<String?>? observations,
+    Value<DateTime>? createdAt,
+    Value<SyncStatus>? syncStatus,
+    Value<int>? rowid,
+  }) {
+    return MaterialEntriesCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      date: date ?? this.date,
+      materialName: materialName ?? this.materialName,
+      quantity: quantity ?? this.quantity,
+      unit: unit ?? this.unit,
+      observations: observations ?? this.observations,
+      createdAt: createdAt ?? this.createdAt,
+      syncStatus: syncStatus ?? this.syncStatus,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (materialName.present) {
+      map['material_name'] = Variable<String>(materialName.value);
+    }
+    if (quantity.present) {
+      map['quantity'] = Variable<double>(quantity.value);
+    }
+    if (unit.present) {
+      map['unit'] = Variable<String>(unit.value);
+    }
+    if (observations.present) {
+      map['observations'] = Variable<String>(observations.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (syncStatus.present) {
+      map['sync_status'] = Variable<int>(
+        $MaterialEntriesTable.$convertersyncStatus.toSql(syncStatus.value),
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MaterialEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('date: $date, ')
+          ..write('materialName: $materialName, ')
+          ..write('quantity: $quantity, ')
+          ..write('unit: $unit, ')
+          ..write('observations: $observations, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MaterialExitsTable extends MaterialExits
+    with TableInfo<$MaterialExitsTable, MaterialExit> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MaterialExitsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _materialNameMeta = const VerificationMeta(
+    'materialName',
+  );
+  @override
+  late final GeneratedColumn<String> materialName = GeneratedColumn<String>(
+    'material_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _quantityMeta = const VerificationMeta(
+    'quantity',
+  );
+  @override
+  late final GeneratedColumn<double> quantity = GeneratedColumn<double>(
+    'quantity',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _unitMeta = const VerificationMeta('unit');
+  @override
+  late final GeneratedColumn<String> unit = GeneratedColumn<String>(
+    'unit',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _destinationMeta = const VerificationMeta(
+    'destination',
+  );
+  @override
+  late final GeneratedColumn<String> destination = GeneratedColumn<String>(
+    'destination',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _observationsMeta = const VerificationMeta(
+    'observations',
+  );
+  @override
+  late final GeneratedColumn<String> observations = GeneratedColumn<String>(
+    'observations',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<SyncStatus, int> syncStatus =
+      GeneratedColumn<int>(
+        'sync_status',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      ).withConverter<SyncStatus>($MaterialExitsTable.$convertersyncStatus);
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    projectId,
+    date,
+    materialName,
+    quantity,
+    unit,
+    destination,
+    observations,
+    createdAt,
+    syncStatus,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'material_exits';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MaterialExit> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('material_name')) {
+      context.handle(
+        _materialNameMeta,
+        materialName.isAcceptableOrUnknown(
+          data['material_name']!,
+          _materialNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_materialNameMeta);
+    }
+    if (data.containsKey('quantity')) {
+      context.handle(
+        _quantityMeta,
+        quantity.isAcceptableOrUnknown(data['quantity']!, _quantityMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_quantityMeta);
+    }
+    if (data.containsKey('unit')) {
+      context.handle(
+        _unitMeta,
+        unit.isAcceptableOrUnknown(data['unit']!, _unitMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_unitMeta);
+    }
+    if (data.containsKey('destination')) {
+      context.handle(
+        _destinationMeta,
+        destination.isAcceptableOrUnknown(
+          data['destination']!,
+          _destinationMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_destinationMeta);
+    }
+    if (data.containsKey('observations')) {
+      context.handle(
+        _observationsMeta,
+        observations.isAcceptableOrUnknown(
+          data['observations']!,
+          _observationsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MaterialExit map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MaterialExit(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}date'],
+      )!,
+      materialName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}material_name'],
+      )!,
+      quantity: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}quantity'],
+      )!,
+      unit: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}unit'],
+      )!,
+      destination: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}destination'],
+      )!,
+      observations: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}observations'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      syncStatus: $MaterialExitsTable.$convertersyncStatus.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}sync_status'],
+        )!,
+      ),
+    );
+  }
+
+  @override
+  $MaterialExitsTable createAlias(String alias) {
+    return $MaterialExitsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<SyncStatus, int, int> $convertersyncStatus =
+      const EnumIndexConverter<SyncStatus>(SyncStatus.values);
+}
+
+class MaterialExit extends DataClass implements Insertable<MaterialExit> {
+  final String id;
+  final String projectId;
+  final DateTime date;
+  final String materialName;
+  final double quantity;
+  final String unit;
+  final String destination;
+  final String? observations;
+  final DateTime createdAt;
+  final SyncStatus syncStatus;
+  const MaterialExit({
+    required this.id,
+    required this.projectId,
+    required this.date,
+    required this.materialName,
+    required this.quantity,
+    required this.unit,
+    required this.destination,
+    this.observations,
+    required this.createdAt,
+    required this.syncStatus,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['date'] = Variable<DateTime>(date);
+    map['material_name'] = Variable<String>(materialName);
+    map['quantity'] = Variable<double>(quantity);
+    map['unit'] = Variable<String>(unit);
+    map['destination'] = Variable<String>(destination);
+    if (!nullToAbsent || observations != null) {
+      map['observations'] = Variable<String>(observations);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    {
+      map['sync_status'] = Variable<int>(
+        $MaterialExitsTable.$convertersyncStatus.toSql(syncStatus),
+      );
+    }
+    return map;
+  }
+
+  MaterialExitsCompanion toCompanion(bool nullToAbsent) {
+    return MaterialExitsCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      date: Value(date),
+      materialName: Value(materialName),
+      quantity: Value(quantity),
+      unit: Value(unit),
+      destination: Value(destination),
+      observations: observations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(observations),
+      createdAt: Value(createdAt),
+      syncStatus: Value(syncStatus),
+    );
+  }
+
+  factory MaterialExit.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MaterialExit(
+      id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      date: serializer.fromJson<DateTime>(json['date']),
+      materialName: serializer.fromJson<String>(json['materialName']),
+      quantity: serializer.fromJson<double>(json['quantity']),
+      unit: serializer.fromJson<String>(json['unit']),
+      destination: serializer.fromJson<String>(json['destination']),
+      observations: serializer.fromJson<String?>(json['observations']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      syncStatus: $MaterialExitsTable.$convertersyncStatus.fromJson(
+        serializer.fromJson<int>(json['syncStatus']),
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'date': serializer.toJson<DateTime>(date),
+      'materialName': serializer.toJson<String>(materialName),
+      'quantity': serializer.toJson<double>(quantity),
+      'unit': serializer.toJson<String>(unit),
+      'destination': serializer.toJson<String>(destination),
+      'observations': serializer.toJson<String?>(observations),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'syncStatus': serializer.toJson<int>(
+        $MaterialExitsTable.$convertersyncStatus.toJson(syncStatus),
+      ),
+    };
+  }
+
+  MaterialExit copyWith({
+    String? id,
+    String? projectId,
+    DateTime? date,
+    String? materialName,
+    double? quantity,
+    String? unit,
+    String? destination,
+    Value<String?> observations = const Value.absent(),
+    DateTime? createdAt,
+    SyncStatus? syncStatus,
+  }) => MaterialExit(
+    id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
+    date: date ?? this.date,
+    materialName: materialName ?? this.materialName,
+    quantity: quantity ?? this.quantity,
+    unit: unit ?? this.unit,
+    destination: destination ?? this.destination,
+    observations: observations.present ? observations.value : this.observations,
+    createdAt: createdAt ?? this.createdAt,
+    syncStatus: syncStatus ?? this.syncStatus,
+  );
+  MaterialExit copyWithCompanion(MaterialExitsCompanion data) {
+    return MaterialExit(
+      id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      date: data.date.present ? data.date.value : this.date,
+      materialName: data.materialName.present
+          ? data.materialName.value
+          : this.materialName,
+      quantity: data.quantity.present ? data.quantity.value : this.quantity,
+      unit: data.unit.present ? data.unit.value : this.unit,
+      destination: data.destination.present
+          ? data.destination.value
+          : this.destination,
+      observations: data.observations.present
+          ? data.observations.value
+          : this.observations,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      syncStatus: data.syncStatus.present
+          ? data.syncStatus.value
+          : this.syncStatus,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MaterialExit(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('date: $date, ')
+          ..write('materialName: $materialName, ')
+          ..write('quantity: $quantity, ')
+          ..write('unit: $unit, ')
+          ..write('destination: $destination, ')
+          ..write('observations: $observations, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('syncStatus: $syncStatus')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    projectId,
+    date,
+    materialName,
+    quantity,
+    unit,
+    destination,
+    observations,
+    createdAt,
+    syncStatus,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MaterialExit &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.date == this.date &&
+          other.materialName == this.materialName &&
+          other.quantity == this.quantity &&
+          other.unit == this.unit &&
+          other.destination == this.destination &&
+          other.observations == this.observations &&
+          other.createdAt == this.createdAt &&
+          other.syncStatus == this.syncStatus);
+}
+
+class MaterialExitsCompanion extends UpdateCompanion<MaterialExit> {
+  final Value<String> id;
+  final Value<String> projectId;
+  final Value<DateTime> date;
+  final Value<String> materialName;
+  final Value<double> quantity;
+  final Value<String> unit;
+  final Value<String> destination;
+  final Value<String?> observations;
+  final Value<DateTime> createdAt;
+  final Value<SyncStatus> syncStatus;
+  final Value<int> rowid;
+  const MaterialExitsCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.date = const Value.absent(),
+    this.materialName = const Value.absent(),
+    this.quantity = const Value.absent(),
+    this.unit = const Value.absent(),
+    this.destination = const Value.absent(),
+    this.observations = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MaterialExitsCompanion.insert({
+    required String id,
+    required String projectId,
+    required DateTime date,
+    required String materialName,
+    required double quantity,
+    required String unit,
+    required String destination,
+    this.observations = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    required SyncStatus syncStatus,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       projectId = Value(projectId),
+       date = Value(date),
+       materialName = Value(materialName),
+       quantity = Value(quantity),
+       unit = Value(unit),
+       destination = Value(destination),
+       syncStatus = Value(syncStatus);
+  static Insertable<MaterialExit> custom({
+    Expression<String>? id,
+    Expression<String>? projectId,
+    Expression<DateTime>? date,
+    Expression<String>? materialName,
+    Expression<double>? quantity,
+    Expression<String>? unit,
+    Expression<String>? destination,
+    Expression<String>? observations,
+    Expression<DateTime>? createdAt,
+    Expression<int>? syncStatus,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (date != null) 'date': date,
+      if (materialName != null) 'material_name': materialName,
+      if (quantity != null) 'quantity': quantity,
+      if (unit != null) 'unit': unit,
+      if (destination != null) 'destination': destination,
+      if (observations != null) 'observations': observations,
+      if (createdAt != null) 'created_at': createdAt,
+      if (syncStatus != null) 'sync_status': syncStatus,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MaterialExitsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? projectId,
+    Value<DateTime>? date,
+    Value<String>? materialName,
+    Value<double>? quantity,
+    Value<String>? unit,
+    Value<String>? destination,
+    Value<String?>? observations,
+    Value<DateTime>? createdAt,
+    Value<SyncStatus>? syncStatus,
+    Value<int>? rowid,
+  }) {
+    return MaterialExitsCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      date: date ?? this.date,
+      materialName: materialName ?? this.materialName,
+      quantity: quantity ?? this.quantity,
+      unit: unit ?? this.unit,
+      destination: destination ?? this.destination,
+      observations: observations ?? this.observations,
+      createdAt: createdAt ?? this.createdAt,
+      syncStatus: syncStatus ?? this.syncStatus,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (materialName.present) {
+      map['material_name'] = Variable<String>(materialName.value);
+    }
+    if (quantity.present) {
+      map['quantity'] = Variable<double>(quantity.value);
+    }
+    if (unit.present) {
+      map['unit'] = Variable<String>(unit.value);
+    }
+    if (destination.present) {
+      map['destination'] = Variable<String>(destination.value);
+    }
+    if (observations.present) {
+      map['observations'] = Variable<String>(observations.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (syncStatus.present) {
+      map['sync_status'] = Variable<int>(
+        $MaterialExitsTable.$convertersyncStatus.toSql(syncStatus.value),
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MaterialExitsCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('date: $date, ')
+          ..write('materialName: $materialName, ')
+          ..write('quantity: $quantity, ')
+          ..write('unit: $unit, ')
+          ..write('destination: $destination, ')
+          ..write('observations: $observations, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MachineryTable extends Machinery
+    with TableInfo<$MachineryTable, Machine> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MachineryTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<SyncStatus, int> syncStatus =
+      GeneratedColumn<int>(
+        'sync_status',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      ).withConverter<SyncStatus>($MachineryTable.$convertersyncStatus);
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    projectId,
+    name,
+    type,
+    description,
+    createdAt,
+    syncStatus,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'machinery';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Machine> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Machine map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Machine(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      ),
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      syncStatus: $MachineryTable.$convertersyncStatus.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}sync_status'],
+        )!,
+      ),
+    );
+  }
+
+  @override
+  $MachineryTable createAlias(String alias) {
+    return $MachineryTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<SyncStatus, int, int> $convertersyncStatus =
+      const EnumIndexConverter<SyncStatus>(SyncStatus.values);
+}
+
+class Machine extends DataClass implements Insertable<Machine> {
+  final String id;
+  final String projectId;
+  final String name;
+  final String? type;
+  final String? description;
+  final DateTime createdAt;
+  final SyncStatus syncStatus;
+  const Machine({
+    required this.id,
+    required this.projectId,
+    required this.name,
+    this.type,
+    this.description,
+    required this.createdAt,
+    required this.syncStatus,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || type != null) {
+      map['type'] = Variable<String>(type);
+    }
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    {
+      map['sync_status'] = Variable<int>(
+        $MachineryTable.$convertersyncStatus.toSql(syncStatus),
+      );
+    }
+    return map;
+  }
+
+  MachineryCompanion toCompanion(bool nullToAbsent) {
+    return MachineryCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      name: Value(name),
+      type: type == null && nullToAbsent ? const Value.absent() : Value(type),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      createdAt: Value(createdAt),
+      syncStatus: Value(syncStatus),
+    );
+  }
+
+  factory Machine.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Machine(
+      id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      name: serializer.fromJson<String>(json['name']),
+      type: serializer.fromJson<String?>(json['type']),
+      description: serializer.fromJson<String?>(json['description']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      syncStatus: $MachineryTable.$convertersyncStatus.fromJson(
+        serializer.fromJson<int>(json['syncStatus']),
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'name': serializer.toJson<String>(name),
+      'type': serializer.toJson<String?>(type),
+      'description': serializer.toJson<String?>(description),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'syncStatus': serializer.toJson<int>(
+        $MachineryTable.$convertersyncStatus.toJson(syncStatus),
+      ),
+    };
+  }
+
+  Machine copyWith({
+    String? id,
+    String? projectId,
+    String? name,
+    Value<String?> type = const Value.absent(),
+    Value<String?> description = const Value.absent(),
+    DateTime? createdAt,
+    SyncStatus? syncStatus,
+  }) => Machine(
+    id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
+    name: name ?? this.name,
+    type: type.present ? type.value : this.type,
+    description: description.present ? description.value : this.description,
+    createdAt: createdAt ?? this.createdAt,
+    syncStatus: syncStatus ?? this.syncStatus,
+  );
+  Machine copyWithCompanion(MachineryCompanion data) {
+    return Machine(
+      id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      name: data.name.present ? data.name.value : this.name,
+      type: data.type.present ? data.type.value : this.type,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      syncStatus: data.syncStatus.present
+          ? data.syncStatus.value
+          : this.syncStatus,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Machine(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('type: $type, ')
+          ..write('description: $description, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('syncStatus: $syncStatus')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    projectId,
+    name,
+    type,
+    description,
+    createdAt,
+    syncStatus,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Machine &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.name == this.name &&
+          other.type == this.type &&
+          other.description == this.description &&
+          other.createdAt == this.createdAt &&
+          other.syncStatus == this.syncStatus);
+}
+
+class MachineryCompanion extends UpdateCompanion<Machine> {
+  final Value<String> id;
+  final Value<String> projectId;
+  final Value<String> name;
+  final Value<String?> type;
+  final Value<String?> description;
+  final Value<DateTime> createdAt;
+  final Value<SyncStatus> syncStatus;
+  final Value<int> rowid;
+  const MachineryCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.type = const Value.absent(),
+    this.description = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MachineryCompanion.insert({
+    required String id,
+    required String projectId,
+    required String name,
+    this.type = const Value.absent(),
+    this.description = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    required SyncStatus syncStatus,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       projectId = Value(projectId),
+       name = Value(name),
+       syncStatus = Value(syncStatus);
+  static Insertable<Machine> custom({
+    Expression<String>? id,
+    Expression<String>? projectId,
+    Expression<String>? name,
+    Expression<String>? type,
+    Expression<String>? description,
+    Expression<DateTime>? createdAt,
+    Expression<int>? syncStatus,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (name != null) 'name': name,
+      if (type != null) 'type': type,
+      if (description != null) 'description': description,
+      if (createdAt != null) 'created_at': createdAt,
+      if (syncStatus != null) 'sync_status': syncStatus,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MachineryCompanion copyWith({
+    Value<String>? id,
+    Value<String>? projectId,
+    Value<String>? name,
+    Value<String?>? type,
+    Value<String?>? description,
+    Value<DateTime>? createdAt,
+    Value<SyncStatus>? syncStatus,
+    Value<int>? rowid,
+  }) {
+    return MachineryCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      name: name ?? this.name,
+      type: type ?? this.type,
+      description: description ?? this.description,
+      createdAt: createdAt ?? this.createdAt,
+      syncStatus: syncStatus ?? this.syncStatus,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (syncStatus.present) {
+      map['sync_status'] = Variable<int>(
+        $MachineryTable.$convertersyncStatus.toSql(syncStatus.value),
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MachineryCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('type: $type, ')
+          ..write('description: $description, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $SyncQueueTable syncQueue = $SyncQueueTable(this);
   late final $ProjectsTable projects = $ProjectsTable(this);
+  late final $DailyRecordsTable dailyRecords = $DailyRecordsTable(this);
+  late final $MaterialEntriesTable materialEntries = $MaterialEntriesTable(
+    this,
+  );
+  late final $MaterialExitsTable materialExits = $MaterialExitsTable(this);
+  late final $MachineryTable machinery = $MachineryTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [syncQueue, projects];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    syncQueue,
+    projects,
+    dailyRecords,
+    materialEntries,
+    materialExits,
+    machinery,
+  ];
 }
 
 typedef $$SyncQueueTableCreateCompanionBuilder =
@@ -1616,6 +3820,1100 @@ typedef $$ProjectsTableProcessedTableManager =
       Project,
       PrefetchHooks Function()
     >;
+typedef $$DailyRecordsTableCreateCompanionBuilder =
+    DailyRecordsCompanion Function({
+      required String id,
+      required String projectId,
+      required DateTime date,
+      required String description,
+      Value<String?> observations,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      required SyncStatus syncStatus,
+      Value<int> rowid,
+    });
+typedef $$DailyRecordsTableUpdateCompanionBuilder =
+    DailyRecordsCompanion Function({
+      Value<String> id,
+      Value<String> projectId,
+      Value<DateTime> date,
+      Value<String> description,
+      Value<String?> observations,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<SyncStatus> syncStatus,
+      Value<int> rowid,
+    });
+
+class $$DailyRecordsTableFilterComposer
+    extends Composer<_$AppDatabase, $DailyRecordsTable> {
+  $$DailyRecordsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get observations => $composableBuilder(
+    column: $table.observations,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<SyncStatus, SyncStatus, int> get syncStatus =>
+      $composableBuilder(
+        column: $table.syncStatus,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+}
+
+class $$DailyRecordsTableOrderingComposer
+    extends Composer<_$AppDatabase, $DailyRecordsTable> {
+  $$DailyRecordsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get observations => $composableBuilder(
+    column: $table.observations,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DailyRecordsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DailyRecordsTable> {
+  $$DailyRecordsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get observations => $composableBuilder(
+    column: $table.observations,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SyncStatus, int> get syncStatus =>
+      $composableBuilder(
+        column: $table.syncStatus,
+        builder: (column) => column,
+      );
+}
+
+class $$DailyRecordsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DailyRecordsTable,
+          DailyRecord,
+          $$DailyRecordsTableFilterComposer,
+          $$DailyRecordsTableOrderingComposer,
+          $$DailyRecordsTableAnnotationComposer,
+          $$DailyRecordsTableCreateCompanionBuilder,
+          $$DailyRecordsTableUpdateCompanionBuilder,
+          (
+            DailyRecord,
+            BaseReferences<_$AppDatabase, $DailyRecordsTable, DailyRecord>,
+          ),
+          DailyRecord,
+          PrefetchHooks Function()
+        > {
+  $$DailyRecordsTableTableManager(_$AppDatabase db, $DailyRecordsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DailyRecordsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DailyRecordsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DailyRecordsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<DateTime> date = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String?> observations = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<SyncStatus> syncStatus = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DailyRecordsCompanion(
+                id: id,
+                projectId: projectId,
+                date: date,
+                description: description,
+                observations: observations,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                syncStatus: syncStatus,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String projectId,
+                required DateTime date,
+                required String description,
+                Value<String?> observations = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                required SyncStatus syncStatus,
+                Value<int> rowid = const Value.absent(),
+              }) => DailyRecordsCompanion.insert(
+                id: id,
+                projectId: projectId,
+                date: date,
+                description: description,
+                observations: observations,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                syncStatus: syncStatus,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DailyRecordsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DailyRecordsTable,
+      DailyRecord,
+      $$DailyRecordsTableFilterComposer,
+      $$DailyRecordsTableOrderingComposer,
+      $$DailyRecordsTableAnnotationComposer,
+      $$DailyRecordsTableCreateCompanionBuilder,
+      $$DailyRecordsTableUpdateCompanionBuilder,
+      (
+        DailyRecord,
+        BaseReferences<_$AppDatabase, $DailyRecordsTable, DailyRecord>,
+      ),
+      DailyRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$MaterialEntriesTableCreateCompanionBuilder =
+    MaterialEntriesCompanion Function({
+      required String id,
+      required String projectId,
+      required DateTime date,
+      required String materialName,
+      required double quantity,
+      required String unit,
+      Value<String?> observations,
+      Value<DateTime> createdAt,
+      required SyncStatus syncStatus,
+      Value<int> rowid,
+    });
+typedef $$MaterialEntriesTableUpdateCompanionBuilder =
+    MaterialEntriesCompanion Function({
+      Value<String> id,
+      Value<String> projectId,
+      Value<DateTime> date,
+      Value<String> materialName,
+      Value<double> quantity,
+      Value<String> unit,
+      Value<String?> observations,
+      Value<DateTime> createdAt,
+      Value<SyncStatus> syncStatus,
+      Value<int> rowid,
+    });
+
+class $$MaterialEntriesTableFilterComposer
+    extends Composer<_$AppDatabase, $MaterialEntriesTable> {
+  $$MaterialEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get materialName => $composableBuilder(
+    column: $table.materialName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get unit => $composableBuilder(
+    column: $table.unit,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get observations => $composableBuilder(
+    column: $table.observations,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<SyncStatus, SyncStatus, int> get syncStatus =>
+      $composableBuilder(
+        column: $table.syncStatus,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+}
+
+class $$MaterialEntriesTableOrderingComposer
+    extends Composer<_$AppDatabase, $MaterialEntriesTable> {
+  $$MaterialEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get materialName => $composableBuilder(
+    column: $table.materialName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get unit => $composableBuilder(
+    column: $table.unit,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get observations => $composableBuilder(
+    column: $table.observations,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MaterialEntriesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MaterialEntriesTable> {
+  $$MaterialEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<String> get materialName => $composableBuilder(
+    column: $table.materialName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get quantity =>
+      $composableBuilder(column: $table.quantity, builder: (column) => column);
+
+  GeneratedColumn<String> get unit =>
+      $composableBuilder(column: $table.unit, builder: (column) => column);
+
+  GeneratedColumn<String> get observations => $composableBuilder(
+    column: $table.observations,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SyncStatus, int> get syncStatus =>
+      $composableBuilder(
+        column: $table.syncStatus,
+        builder: (column) => column,
+      );
+}
+
+class $$MaterialEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MaterialEntriesTable,
+          MaterialEntry,
+          $$MaterialEntriesTableFilterComposer,
+          $$MaterialEntriesTableOrderingComposer,
+          $$MaterialEntriesTableAnnotationComposer,
+          $$MaterialEntriesTableCreateCompanionBuilder,
+          $$MaterialEntriesTableUpdateCompanionBuilder,
+          (
+            MaterialEntry,
+            BaseReferences<_$AppDatabase, $MaterialEntriesTable, MaterialEntry>,
+          ),
+          MaterialEntry,
+          PrefetchHooks Function()
+        > {
+  $$MaterialEntriesTableTableManager(
+    _$AppDatabase db,
+    $MaterialEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MaterialEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MaterialEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MaterialEntriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<DateTime> date = const Value.absent(),
+                Value<String> materialName = const Value.absent(),
+                Value<double> quantity = const Value.absent(),
+                Value<String> unit = const Value.absent(),
+                Value<String?> observations = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<SyncStatus> syncStatus = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MaterialEntriesCompanion(
+                id: id,
+                projectId: projectId,
+                date: date,
+                materialName: materialName,
+                quantity: quantity,
+                unit: unit,
+                observations: observations,
+                createdAt: createdAt,
+                syncStatus: syncStatus,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String projectId,
+                required DateTime date,
+                required String materialName,
+                required double quantity,
+                required String unit,
+                Value<String?> observations = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                required SyncStatus syncStatus,
+                Value<int> rowid = const Value.absent(),
+              }) => MaterialEntriesCompanion.insert(
+                id: id,
+                projectId: projectId,
+                date: date,
+                materialName: materialName,
+                quantity: quantity,
+                unit: unit,
+                observations: observations,
+                createdAt: createdAt,
+                syncStatus: syncStatus,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MaterialEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MaterialEntriesTable,
+      MaterialEntry,
+      $$MaterialEntriesTableFilterComposer,
+      $$MaterialEntriesTableOrderingComposer,
+      $$MaterialEntriesTableAnnotationComposer,
+      $$MaterialEntriesTableCreateCompanionBuilder,
+      $$MaterialEntriesTableUpdateCompanionBuilder,
+      (
+        MaterialEntry,
+        BaseReferences<_$AppDatabase, $MaterialEntriesTable, MaterialEntry>,
+      ),
+      MaterialEntry,
+      PrefetchHooks Function()
+    >;
+typedef $$MaterialExitsTableCreateCompanionBuilder =
+    MaterialExitsCompanion Function({
+      required String id,
+      required String projectId,
+      required DateTime date,
+      required String materialName,
+      required double quantity,
+      required String unit,
+      required String destination,
+      Value<String?> observations,
+      Value<DateTime> createdAt,
+      required SyncStatus syncStatus,
+      Value<int> rowid,
+    });
+typedef $$MaterialExitsTableUpdateCompanionBuilder =
+    MaterialExitsCompanion Function({
+      Value<String> id,
+      Value<String> projectId,
+      Value<DateTime> date,
+      Value<String> materialName,
+      Value<double> quantity,
+      Value<String> unit,
+      Value<String> destination,
+      Value<String?> observations,
+      Value<DateTime> createdAt,
+      Value<SyncStatus> syncStatus,
+      Value<int> rowid,
+    });
+
+class $$MaterialExitsTableFilterComposer
+    extends Composer<_$AppDatabase, $MaterialExitsTable> {
+  $$MaterialExitsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get materialName => $composableBuilder(
+    column: $table.materialName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get unit => $composableBuilder(
+    column: $table.unit,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get destination => $composableBuilder(
+    column: $table.destination,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get observations => $composableBuilder(
+    column: $table.observations,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<SyncStatus, SyncStatus, int> get syncStatus =>
+      $composableBuilder(
+        column: $table.syncStatus,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+}
+
+class $$MaterialExitsTableOrderingComposer
+    extends Composer<_$AppDatabase, $MaterialExitsTable> {
+  $$MaterialExitsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get materialName => $composableBuilder(
+    column: $table.materialName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get unit => $composableBuilder(
+    column: $table.unit,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get destination => $composableBuilder(
+    column: $table.destination,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get observations => $composableBuilder(
+    column: $table.observations,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MaterialExitsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MaterialExitsTable> {
+  $$MaterialExitsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<String> get materialName => $composableBuilder(
+    column: $table.materialName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get quantity =>
+      $composableBuilder(column: $table.quantity, builder: (column) => column);
+
+  GeneratedColumn<String> get unit =>
+      $composableBuilder(column: $table.unit, builder: (column) => column);
+
+  GeneratedColumn<String> get destination => $composableBuilder(
+    column: $table.destination,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get observations => $composableBuilder(
+    column: $table.observations,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SyncStatus, int> get syncStatus =>
+      $composableBuilder(
+        column: $table.syncStatus,
+        builder: (column) => column,
+      );
+}
+
+class $$MaterialExitsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MaterialExitsTable,
+          MaterialExit,
+          $$MaterialExitsTableFilterComposer,
+          $$MaterialExitsTableOrderingComposer,
+          $$MaterialExitsTableAnnotationComposer,
+          $$MaterialExitsTableCreateCompanionBuilder,
+          $$MaterialExitsTableUpdateCompanionBuilder,
+          (
+            MaterialExit,
+            BaseReferences<_$AppDatabase, $MaterialExitsTable, MaterialExit>,
+          ),
+          MaterialExit,
+          PrefetchHooks Function()
+        > {
+  $$MaterialExitsTableTableManager(_$AppDatabase db, $MaterialExitsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MaterialExitsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MaterialExitsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MaterialExitsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<DateTime> date = const Value.absent(),
+                Value<String> materialName = const Value.absent(),
+                Value<double> quantity = const Value.absent(),
+                Value<String> unit = const Value.absent(),
+                Value<String> destination = const Value.absent(),
+                Value<String?> observations = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<SyncStatus> syncStatus = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MaterialExitsCompanion(
+                id: id,
+                projectId: projectId,
+                date: date,
+                materialName: materialName,
+                quantity: quantity,
+                unit: unit,
+                destination: destination,
+                observations: observations,
+                createdAt: createdAt,
+                syncStatus: syncStatus,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String projectId,
+                required DateTime date,
+                required String materialName,
+                required double quantity,
+                required String unit,
+                required String destination,
+                Value<String?> observations = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                required SyncStatus syncStatus,
+                Value<int> rowid = const Value.absent(),
+              }) => MaterialExitsCompanion.insert(
+                id: id,
+                projectId: projectId,
+                date: date,
+                materialName: materialName,
+                quantity: quantity,
+                unit: unit,
+                destination: destination,
+                observations: observations,
+                createdAt: createdAt,
+                syncStatus: syncStatus,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MaterialExitsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MaterialExitsTable,
+      MaterialExit,
+      $$MaterialExitsTableFilterComposer,
+      $$MaterialExitsTableOrderingComposer,
+      $$MaterialExitsTableAnnotationComposer,
+      $$MaterialExitsTableCreateCompanionBuilder,
+      $$MaterialExitsTableUpdateCompanionBuilder,
+      (
+        MaterialExit,
+        BaseReferences<_$AppDatabase, $MaterialExitsTable, MaterialExit>,
+      ),
+      MaterialExit,
+      PrefetchHooks Function()
+    >;
+typedef $$MachineryTableCreateCompanionBuilder =
+    MachineryCompanion Function({
+      required String id,
+      required String projectId,
+      required String name,
+      Value<String?> type,
+      Value<String?> description,
+      Value<DateTime> createdAt,
+      required SyncStatus syncStatus,
+      Value<int> rowid,
+    });
+typedef $$MachineryTableUpdateCompanionBuilder =
+    MachineryCompanion Function({
+      Value<String> id,
+      Value<String> projectId,
+      Value<String> name,
+      Value<String?> type,
+      Value<String?> description,
+      Value<DateTime> createdAt,
+      Value<SyncStatus> syncStatus,
+      Value<int> rowid,
+    });
+
+class $$MachineryTableFilterComposer
+    extends Composer<_$AppDatabase, $MachineryTable> {
+  $$MachineryTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<SyncStatus, SyncStatus, int> get syncStatus =>
+      $composableBuilder(
+        column: $table.syncStatus,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+}
+
+class $$MachineryTableOrderingComposer
+    extends Composer<_$AppDatabase, $MachineryTable> {
+  $$MachineryTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MachineryTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MachineryTable> {
+  $$MachineryTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SyncStatus, int> get syncStatus =>
+      $composableBuilder(
+        column: $table.syncStatus,
+        builder: (column) => column,
+      );
+}
+
+class $$MachineryTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MachineryTable,
+          Machine,
+          $$MachineryTableFilterComposer,
+          $$MachineryTableOrderingComposer,
+          $$MachineryTableAnnotationComposer,
+          $$MachineryTableCreateCompanionBuilder,
+          $$MachineryTableUpdateCompanionBuilder,
+          (Machine, BaseReferences<_$AppDatabase, $MachineryTable, Machine>),
+          Machine,
+          PrefetchHooks Function()
+        > {
+  $$MachineryTableTableManager(_$AppDatabase db, $MachineryTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MachineryTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MachineryTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MachineryTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> type = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<SyncStatus> syncStatus = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MachineryCompanion(
+                id: id,
+                projectId: projectId,
+                name: name,
+                type: type,
+                description: description,
+                createdAt: createdAt,
+                syncStatus: syncStatus,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String projectId,
+                required String name,
+                Value<String?> type = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                required SyncStatus syncStatus,
+                Value<int> rowid = const Value.absent(),
+              }) => MachineryCompanion.insert(
+                id: id,
+                projectId: projectId,
+                name: name,
+                type: type,
+                description: description,
+                createdAt: createdAt,
+                syncStatus: syncStatus,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MachineryTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MachineryTable,
+      Machine,
+      $$MachineryTableFilterComposer,
+      $$MachineryTableOrderingComposer,
+      $$MachineryTableAnnotationComposer,
+      $$MachineryTableCreateCompanionBuilder,
+      $$MachineryTableUpdateCompanionBuilder,
+      (Machine, BaseReferences<_$AppDatabase, $MachineryTable, Machine>),
+      Machine,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1624,4 +4922,12 @@ class $AppDatabaseManager {
       $$SyncQueueTableTableManager(_db, _db.syncQueue);
   $$ProjectsTableTableManager get projects =>
       $$ProjectsTableTableManager(_db, _db.projects);
+  $$DailyRecordsTableTableManager get dailyRecords =>
+      $$DailyRecordsTableTableManager(_db, _db.dailyRecords);
+  $$MaterialEntriesTableTableManager get materialEntries =>
+      $$MaterialEntriesTableTableManager(_db, _db.materialEntries);
+  $$MaterialExitsTableTableManager get materialExits =>
+      $$MaterialExitsTableTableManager(_db, _db.materialExits);
+  $$MachineryTableTableManager get machinery =>
+      $$MachineryTableTableManager(_db, _db.machinery);
 }
