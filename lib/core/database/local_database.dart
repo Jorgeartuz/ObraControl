@@ -4,7 +4,7 @@ import '../sync/domain/sync_status.dart';
 
 part 'local_database.g.dart';
 
-// --- TABLAS EXISTENTES ---
+// --- 1. TABLA DE COLA DE SINCRONIZACIÓN (Paso 1) ---
 @DataClassName('SyncQueueItem')
 class SyncQueue extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -18,22 +18,22 @@ class SyncQueue extends Table {
   IntColumn get syncStatus => integer().map(const EnumIndexConverter<SyncStatus>(SyncStatus.values))();
 }
 
+// --- 2. TABLA DE PROYECTOS/OBRAS (Paso 2) ---
 @DataClassName('Project')
 class Projects extends Table {
-  TextColumn get id => text()(); 
+  TextColumn get id => text()(); // UUID
   TextColumn get name => text().withLength(min: 1, max: 100)();
   TextColumn get description => text().nullable()();
   TextColumn get location => text().nullable()();
   DateTimeColumn get startDate => dateTime()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
-  TextColumn get status => text()(); 
+  TextColumn get status => text()(); // 'activa', 'finalizada'
   @override
   Set<Column> get primaryKey => {id};
 }
 
-// --- NUEVAS TABLAS STEP 3 ---
-
+// --- 3. TABLA DE REGISTROS DIARIOS (Paso 3) ---
 @DataClassName('DailyRecord')
 class DailyRecords extends Table {
   TextColumn get id => text()();
@@ -48,6 +48,7 @@ class DailyRecords extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+// --- 4. TABLA DE ENTRADA DE MATERIALES (Paso 3) ---
 @DataClassName('MaterialEntry')
 class MaterialEntries extends Table {
   TextColumn get id => text()();
@@ -63,6 +64,7 @@ class MaterialEntries extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+// --- 5. TABLA DE SALIDA DE MATERIALES (Paso 3) ---
 @DataClassName('MaterialExit')
 class MaterialExits extends Table {
   TextColumn get id => text()();
@@ -79,6 +81,7 @@ class MaterialExits extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+// --- 6. TABLA DE MAQUINARIA (Paso 3) ---
 @DataClassName('Machine')
 class Machinery extends Table {
   TextColumn get id => text()();
@@ -92,25 +95,59 @@ class Machinery extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DriftDatabase(tables: [SyncQueue, Projects, DailyRecords, MaterialEntries, MaterialExits, Machinery])
+// --- 7. TABLA DE FOTOS DE REGISTROS (Paso 4 - NUEVA) ---
+@DataClassName('DailyRecordPhoto') // <--- Esto genera la clase que te faltaba
+class DailyRecordPhotos extends Table {
+  TextColumn get id => text()();
+  TextColumn get dailyRecordId => text()();
+  TextColumn get localPath => text()();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  IntColumn get syncStatus => integer().map(const EnumIndexConverter<SyncStatus>(SyncStatus.values))();
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+// --- CONFIGURACIÓN DE LA BASE DE DATOS ---
+
+@DriftDatabase(tables: [
+  SyncQueue, 
+  Projects, 
+  DailyRecords, 
+  MaterialEntries, 
+  MaterialExits, 
+  Machinery, 
+  DailyRecordPhotos
+])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
+  // Incrementamos la versión a 4 por la nueva tabla de fotos
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (m) async {
+      await m.createAll();
+    },
     onUpgrade: (m, from, to) async {
-      if (from < 2) await m.createTable(projects);
+      if (from < 2) {
+        await m.createTable(projects);
+      }
       if (from < 3) {
         await m.createTable(dailyRecords);
         await m.createTable(materialEntries);
         await m.createTable(materialExits);
         await m.createTable(machinery);
       }
+      if (from < 4) {
+        // Migración para el Paso 4: Agregar tabla de fotos
+        await m.createTable(dailyRecordPhotos);
+      }
     },
   );
 
-  static QueryExecutor _openConnection() => driftDatabase(name: 'obra_control_db');
+  static QueryExecutor _openConnection() {
+    return driftDatabase(name: 'obra_control_db');
+  }
 }

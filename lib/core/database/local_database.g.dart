@@ -3264,6 +3264,380 @@ class MachineryCompanion extends UpdateCompanion<Machine> {
   }
 }
 
+class $DailyRecordPhotosTable extends DailyRecordPhotos
+    with TableInfo<$DailyRecordPhotosTable, DailyRecordPhoto> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DailyRecordPhotosTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dailyRecordIdMeta = const VerificationMeta(
+    'dailyRecordId',
+  );
+  @override
+  late final GeneratedColumn<String> dailyRecordId = GeneratedColumn<String>(
+    'daily_record_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _localPathMeta = const VerificationMeta(
+    'localPath',
+  );
+  @override
+  late final GeneratedColumn<String> localPath = GeneratedColumn<String>(
+    'local_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<SyncStatus, int> syncStatus =
+      GeneratedColumn<int>(
+        'sync_status',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      ).withConverter<SyncStatus>($DailyRecordPhotosTable.$convertersyncStatus);
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    dailyRecordId,
+    localPath,
+    createdAt,
+    syncStatus,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'daily_record_photos';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DailyRecordPhoto> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('daily_record_id')) {
+      context.handle(
+        _dailyRecordIdMeta,
+        dailyRecordId.isAcceptableOrUnknown(
+          data['daily_record_id']!,
+          _dailyRecordIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_dailyRecordIdMeta);
+    }
+    if (data.containsKey('local_path')) {
+      context.handle(
+        _localPathMeta,
+        localPath.isAcceptableOrUnknown(data['local_path']!, _localPathMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_localPathMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DailyRecordPhoto map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DailyRecordPhoto(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      dailyRecordId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}daily_record_id'],
+      )!,
+      localPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}local_path'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      syncStatus: $DailyRecordPhotosTable.$convertersyncStatus.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}sync_status'],
+        )!,
+      ),
+    );
+  }
+
+  @override
+  $DailyRecordPhotosTable createAlias(String alias) {
+    return $DailyRecordPhotosTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<SyncStatus, int, int> $convertersyncStatus =
+      const EnumIndexConverter<SyncStatus>(SyncStatus.values);
+}
+
+class DailyRecordPhoto extends DataClass
+    implements Insertable<DailyRecordPhoto> {
+  final String id;
+  final String dailyRecordId;
+  final String localPath;
+  final DateTime createdAt;
+  final SyncStatus syncStatus;
+  const DailyRecordPhoto({
+    required this.id,
+    required this.dailyRecordId,
+    required this.localPath,
+    required this.createdAt,
+    required this.syncStatus,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['daily_record_id'] = Variable<String>(dailyRecordId);
+    map['local_path'] = Variable<String>(localPath);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    {
+      map['sync_status'] = Variable<int>(
+        $DailyRecordPhotosTable.$convertersyncStatus.toSql(syncStatus),
+      );
+    }
+    return map;
+  }
+
+  DailyRecordPhotosCompanion toCompanion(bool nullToAbsent) {
+    return DailyRecordPhotosCompanion(
+      id: Value(id),
+      dailyRecordId: Value(dailyRecordId),
+      localPath: Value(localPath),
+      createdAt: Value(createdAt),
+      syncStatus: Value(syncStatus),
+    );
+  }
+
+  factory DailyRecordPhoto.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DailyRecordPhoto(
+      id: serializer.fromJson<String>(json['id']),
+      dailyRecordId: serializer.fromJson<String>(json['dailyRecordId']),
+      localPath: serializer.fromJson<String>(json['localPath']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      syncStatus: $DailyRecordPhotosTable.$convertersyncStatus.fromJson(
+        serializer.fromJson<int>(json['syncStatus']),
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'dailyRecordId': serializer.toJson<String>(dailyRecordId),
+      'localPath': serializer.toJson<String>(localPath),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'syncStatus': serializer.toJson<int>(
+        $DailyRecordPhotosTable.$convertersyncStatus.toJson(syncStatus),
+      ),
+    };
+  }
+
+  DailyRecordPhoto copyWith({
+    String? id,
+    String? dailyRecordId,
+    String? localPath,
+    DateTime? createdAt,
+    SyncStatus? syncStatus,
+  }) => DailyRecordPhoto(
+    id: id ?? this.id,
+    dailyRecordId: dailyRecordId ?? this.dailyRecordId,
+    localPath: localPath ?? this.localPath,
+    createdAt: createdAt ?? this.createdAt,
+    syncStatus: syncStatus ?? this.syncStatus,
+  );
+  DailyRecordPhoto copyWithCompanion(DailyRecordPhotosCompanion data) {
+    return DailyRecordPhoto(
+      id: data.id.present ? data.id.value : this.id,
+      dailyRecordId: data.dailyRecordId.present
+          ? data.dailyRecordId.value
+          : this.dailyRecordId,
+      localPath: data.localPath.present ? data.localPath.value : this.localPath,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      syncStatus: data.syncStatus.present
+          ? data.syncStatus.value
+          : this.syncStatus,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DailyRecordPhoto(')
+          ..write('id: $id, ')
+          ..write('dailyRecordId: $dailyRecordId, ')
+          ..write('localPath: $localPath, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('syncStatus: $syncStatus')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, dailyRecordId, localPath, createdAt, syncStatus);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DailyRecordPhoto &&
+          other.id == this.id &&
+          other.dailyRecordId == this.dailyRecordId &&
+          other.localPath == this.localPath &&
+          other.createdAt == this.createdAt &&
+          other.syncStatus == this.syncStatus);
+}
+
+class DailyRecordPhotosCompanion extends UpdateCompanion<DailyRecordPhoto> {
+  final Value<String> id;
+  final Value<String> dailyRecordId;
+  final Value<String> localPath;
+  final Value<DateTime> createdAt;
+  final Value<SyncStatus> syncStatus;
+  final Value<int> rowid;
+  const DailyRecordPhotosCompanion({
+    this.id = const Value.absent(),
+    this.dailyRecordId = const Value.absent(),
+    this.localPath = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DailyRecordPhotosCompanion.insert({
+    required String id,
+    required String dailyRecordId,
+    required String localPath,
+    this.createdAt = const Value.absent(),
+    required SyncStatus syncStatus,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       dailyRecordId = Value(dailyRecordId),
+       localPath = Value(localPath),
+       syncStatus = Value(syncStatus);
+  static Insertable<DailyRecordPhoto> custom({
+    Expression<String>? id,
+    Expression<String>? dailyRecordId,
+    Expression<String>? localPath,
+    Expression<DateTime>? createdAt,
+    Expression<int>? syncStatus,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (dailyRecordId != null) 'daily_record_id': dailyRecordId,
+      if (localPath != null) 'local_path': localPath,
+      if (createdAt != null) 'created_at': createdAt,
+      if (syncStatus != null) 'sync_status': syncStatus,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DailyRecordPhotosCompanion copyWith({
+    Value<String>? id,
+    Value<String>? dailyRecordId,
+    Value<String>? localPath,
+    Value<DateTime>? createdAt,
+    Value<SyncStatus>? syncStatus,
+    Value<int>? rowid,
+  }) {
+    return DailyRecordPhotosCompanion(
+      id: id ?? this.id,
+      dailyRecordId: dailyRecordId ?? this.dailyRecordId,
+      localPath: localPath ?? this.localPath,
+      createdAt: createdAt ?? this.createdAt,
+      syncStatus: syncStatus ?? this.syncStatus,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (dailyRecordId.present) {
+      map['daily_record_id'] = Variable<String>(dailyRecordId.value);
+    }
+    if (localPath.present) {
+      map['local_path'] = Variable<String>(localPath.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (syncStatus.present) {
+      map['sync_status'] = Variable<int>(
+        $DailyRecordPhotosTable.$convertersyncStatus.toSql(syncStatus.value),
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DailyRecordPhotosCompanion(')
+          ..write('id: $id, ')
+          ..write('dailyRecordId: $dailyRecordId, ')
+          ..write('localPath: $localPath, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3275,6 +3649,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final $MaterialExitsTable materialExits = $MaterialExitsTable(this);
   late final $MachineryTable machinery = $MachineryTable(this);
+  late final $DailyRecordPhotosTable dailyRecordPhotos =
+      $DailyRecordPhotosTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3286,6 +3662,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     materialEntries,
     materialExits,
     machinery,
+    dailyRecordPhotos,
   ];
 }
 
@@ -4914,6 +5291,225 @@ typedef $$MachineryTableProcessedTableManager =
       Machine,
       PrefetchHooks Function()
     >;
+typedef $$DailyRecordPhotosTableCreateCompanionBuilder =
+    DailyRecordPhotosCompanion Function({
+      required String id,
+      required String dailyRecordId,
+      required String localPath,
+      Value<DateTime> createdAt,
+      required SyncStatus syncStatus,
+      Value<int> rowid,
+    });
+typedef $$DailyRecordPhotosTableUpdateCompanionBuilder =
+    DailyRecordPhotosCompanion Function({
+      Value<String> id,
+      Value<String> dailyRecordId,
+      Value<String> localPath,
+      Value<DateTime> createdAt,
+      Value<SyncStatus> syncStatus,
+      Value<int> rowid,
+    });
+
+class $$DailyRecordPhotosTableFilterComposer
+    extends Composer<_$AppDatabase, $DailyRecordPhotosTable> {
+  $$DailyRecordPhotosTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dailyRecordId => $composableBuilder(
+    column: $table.dailyRecordId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get localPath => $composableBuilder(
+    column: $table.localPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<SyncStatus, SyncStatus, int> get syncStatus =>
+      $composableBuilder(
+        column: $table.syncStatus,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+}
+
+class $$DailyRecordPhotosTableOrderingComposer
+    extends Composer<_$AppDatabase, $DailyRecordPhotosTable> {
+  $$DailyRecordPhotosTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dailyRecordId => $composableBuilder(
+    column: $table.dailyRecordId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get localPath => $composableBuilder(
+    column: $table.localPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DailyRecordPhotosTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DailyRecordPhotosTable> {
+  $$DailyRecordPhotosTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get dailyRecordId => $composableBuilder(
+    column: $table.dailyRecordId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get localPath =>
+      $composableBuilder(column: $table.localPath, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SyncStatus, int> get syncStatus =>
+      $composableBuilder(
+        column: $table.syncStatus,
+        builder: (column) => column,
+      );
+}
+
+class $$DailyRecordPhotosTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DailyRecordPhotosTable,
+          DailyRecordPhoto,
+          $$DailyRecordPhotosTableFilterComposer,
+          $$DailyRecordPhotosTableOrderingComposer,
+          $$DailyRecordPhotosTableAnnotationComposer,
+          $$DailyRecordPhotosTableCreateCompanionBuilder,
+          $$DailyRecordPhotosTableUpdateCompanionBuilder,
+          (
+            DailyRecordPhoto,
+            BaseReferences<
+              _$AppDatabase,
+              $DailyRecordPhotosTable,
+              DailyRecordPhoto
+            >,
+          ),
+          DailyRecordPhoto,
+          PrefetchHooks Function()
+        > {
+  $$DailyRecordPhotosTableTableManager(
+    _$AppDatabase db,
+    $DailyRecordPhotosTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DailyRecordPhotosTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DailyRecordPhotosTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DailyRecordPhotosTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> dailyRecordId = const Value.absent(),
+                Value<String> localPath = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<SyncStatus> syncStatus = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DailyRecordPhotosCompanion(
+                id: id,
+                dailyRecordId: dailyRecordId,
+                localPath: localPath,
+                createdAt: createdAt,
+                syncStatus: syncStatus,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String dailyRecordId,
+                required String localPath,
+                Value<DateTime> createdAt = const Value.absent(),
+                required SyncStatus syncStatus,
+                Value<int> rowid = const Value.absent(),
+              }) => DailyRecordPhotosCompanion.insert(
+                id: id,
+                dailyRecordId: dailyRecordId,
+                localPath: localPath,
+                createdAt: createdAt,
+                syncStatus: syncStatus,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DailyRecordPhotosTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DailyRecordPhotosTable,
+      DailyRecordPhoto,
+      $$DailyRecordPhotosTableFilterComposer,
+      $$DailyRecordPhotosTableOrderingComposer,
+      $$DailyRecordPhotosTableAnnotationComposer,
+      $$DailyRecordPhotosTableCreateCompanionBuilder,
+      $$DailyRecordPhotosTableUpdateCompanionBuilder,
+      (
+        DailyRecordPhoto,
+        BaseReferences<
+          _$AppDatabase,
+          $DailyRecordPhotosTable,
+          DailyRecordPhoto
+        >,
+      ),
+      DailyRecordPhoto,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -4930,4 +5526,6 @@ class $AppDatabaseManager {
       $$MaterialExitsTableTableManager(_db, _db.materialExits);
   $$MachineryTableTableManager get machinery =>
       $$MachineryTableTableManager(_db, _db.machinery);
+  $$DailyRecordPhotosTableTableManager get dailyRecordPhotos =>
+      $$DailyRecordPhotosTableTableManager(_db, _db.dailyRecordPhotos);
 }
