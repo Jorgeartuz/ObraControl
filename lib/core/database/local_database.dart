@@ -57,6 +57,7 @@ class MaterialEntries extends Table {
   TextColumn get materialName => text()();
   RealColumn get quantity => real()();
   TextColumn get unit => text()();
+  TextColumn get supplier => text().nullable()(); // Campo nuevo
   TextColumn get observations => text().nullable()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   IntColumn get syncStatus => integer().map(const EnumIndexConverter<SyncStatus>(SyncStatus.values))();
@@ -123,7 +124,7 @@ class AppDatabase extends _$AppDatabase {
 
   // Incrementamos la versión a 4 por la nueva tabla de fotos
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -144,6 +145,9 @@ class AppDatabase extends _$AppDatabase {
         // Migración para el Paso 4: Agregar tabla de fotos
         await m.createTable(dailyRecordPhotos);
       }
+      if (from < 5) {
+      await m.addColumn(materialEntries, materialEntries.supplier);
+    }
     },
   );
 

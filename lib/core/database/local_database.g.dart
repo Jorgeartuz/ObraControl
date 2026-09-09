@@ -1663,6 +1663,17 @@ class $MaterialEntriesTable extends MaterialEntries
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _supplierMeta = const VerificationMeta(
+    'supplier',
+  );
+  @override
+  late final GeneratedColumn<String> supplier = GeneratedColumn<String>(
+    'supplier',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _observationsMeta = const VerificationMeta(
     'observations',
   );
@@ -1703,6 +1714,7 @@ class $MaterialEntriesTable extends MaterialEntries
     materialName,
     quantity,
     unit,
+    supplier,
     observations,
     createdAt,
     syncStatus,
@@ -1767,6 +1779,12 @@ class $MaterialEntriesTable extends MaterialEntries
     } else if (isInserting) {
       context.missing(_unitMeta);
     }
+    if (data.containsKey('supplier')) {
+      context.handle(
+        _supplierMeta,
+        supplier.isAcceptableOrUnknown(data['supplier']!, _supplierMeta),
+      );
+    }
     if (data.containsKey('observations')) {
       context.handle(
         _observationsMeta,
@@ -1815,6 +1833,10 @@ class $MaterialEntriesTable extends MaterialEntries
         DriftSqlType.string,
         data['${effectivePrefix}unit'],
       )!,
+      supplier: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}supplier'],
+      ),
       observations: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}observations'],
@@ -1848,6 +1870,7 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
   final String materialName;
   final double quantity;
   final String unit;
+  final String? supplier;
   final String? observations;
   final DateTime createdAt;
   final SyncStatus syncStatus;
@@ -1858,6 +1881,7 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
     required this.materialName,
     required this.quantity,
     required this.unit,
+    this.supplier,
     this.observations,
     required this.createdAt,
     required this.syncStatus,
@@ -1871,6 +1895,9 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
     map['material_name'] = Variable<String>(materialName);
     map['quantity'] = Variable<double>(quantity);
     map['unit'] = Variable<String>(unit);
+    if (!nullToAbsent || supplier != null) {
+      map['supplier'] = Variable<String>(supplier);
+    }
     if (!nullToAbsent || observations != null) {
       map['observations'] = Variable<String>(observations);
     }
@@ -1891,6 +1918,9 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
       materialName: Value(materialName),
       quantity: Value(quantity),
       unit: Value(unit),
+      supplier: supplier == null && nullToAbsent
+          ? const Value.absent()
+          : Value(supplier),
       observations: observations == null && nullToAbsent
           ? const Value.absent()
           : Value(observations),
@@ -1911,6 +1941,7 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
       materialName: serializer.fromJson<String>(json['materialName']),
       quantity: serializer.fromJson<double>(json['quantity']),
       unit: serializer.fromJson<String>(json['unit']),
+      supplier: serializer.fromJson<String?>(json['supplier']),
       observations: serializer.fromJson<String?>(json['observations']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       syncStatus: $MaterialEntriesTable.$convertersyncStatus.fromJson(
@@ -1928,6 +1959,7 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
       'materialName': serializer.toJson<String>(materialName),
       'quantity': serializer.toJson<double>(quantity),
       'unit': serializer.toJson<String>(unit),
+      'supplier': serializer.toJson<String?>(supplier),
       'observations': serializer.toJson<String?>(observations),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'syncStatus': serializer.toJson<int>(
@@ -1943,6 +1975,7 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
     String? materialName,
     double? quantity,
     String? unit,
+    Value<String?> supplier = const Value.absent(),
     Value<String?> observations = const Value.absent(),
     DateTime? createdAt,
     SyncStatus? syncStatus,
@@ -1953,6 +1986,7 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
     materialName: materialName ?? this.materialName,
     quantity: quantity ?? this.quantity,
     unit: unit ?? this.unit,
+    supplier: supplier.present ? supplier.value : this.supplier,
     observations: observations.present ? observations.value : this.observations,
     createdAt: createdAt ?? this.createdAt,
     syncStatus: syncStatus ?? this.syncStatus,
@@ -1967,6 +2001,7 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
           : this.materialName,
       quantity: data.quantity.present ? data.quantity.value : this.quantity,
       unit: data.unit.present ? data.unit.value : this.unit,
+      supplier: data.supplier.present ? data.supplier.value : this.supplier,
       observations: data.observations.present
           ? data.observations.value
           : this.observations,
@@ -1986,6 +2021,7 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
           ..write('materialName: $materialName, ')
           ..write('quantity: $quantity, ')
           ..write('unit: $unit, ')
+          ..write('supplier: $supplier, ')
           ..write('observations: $observations, ')
           ..write('createdAt: $createdAt, ')
           ..write('syncStatus: $syncStatus')
@@ -2001,6 +2037,7 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
     materialName,
     quantity,
     unit,
+    supplier,
     observations,
     createdAt,
     syncStatus,
@@ -2015,6 +2052,7 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
           other.materialName == this.materialName &&
           other.quantity == this.quantity &&
           other.unit == this.unit &&
+          other.supplier == this.supplier &&
           other.observations == this.observations &&
           other.createdAt == this.createdAt &&
           other.syncStatus == this.syncStatus);
@@ -2027,6 +2065,7 @@ class MaterialEntriesCompanion extends UpdateCompanion<MaterialEntry> {
   final Value<String> materialName;
   final Value<double> quantity;
   final Value<String> unit;
+  final Value<String?> supplier;
   final Value<String?> observations;
   final Value<DateTime> createdAt;
   final Value<SyncStatus> syncStatus;
@@ -2038,6 +2077,7 @@ class MaterialEntriesCompanion extends UpdateCompanion<MaterialEntry> {
     this.materialName = const Value.absent(),
     this.quantity = const Value.absent(),
     this.unit = const Value.absent(),
+    this.supplier = const Value.absent(),
     this.observations = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.syncStatus = const Value.absent(),
@@ -2050,6 +2090,7 @@ class MaterialEntriesCompanion extends UpdateCompanion<MaterialEntry> {
     required String materialName,
     required double quantity,
     required String unit,
+    this.supplier = const Value.absent(),
     this.observations = const Value.absent(),
     this.createdAt = const Value.absent(),
     required SyncStatus syncStatus,
@@ -2068,6 +2109,7 @@ class MaterialEntriesCompanion extends UpdateCompanion<MaterialEntry> {
     Expression<String>? materialName,
     Expression<double>? quantity,
     Expression<String>? unit,
+    Expression<String>? supplier,
     Expression<String>? observations,
     Expression<DateTime>? createdAt,
     Expression<int>? syncStatus,
@@ -2080,6 +2122,7 @@ class MaterialEntriesCompanion extends UpdateCompanion<MaterialEntry> {
       if (materialName != null) 'material_name': materialName,
       if (quantity != null) 'quantity': quantity,
       if (unit != null) 'unit': unit,
+      if (supplier != null) 'supplier': supplier,
       if (observations != null) 'observations': observations,
       if (createdAt != null) 'created_at': createdAt,
       if (syncStatus != null) 'sync_status': syncStatus,
@@ -2094,6 +2137,7 @@ class MaterialEntriesCompanion extends UpdateCompanion<MaterialEntry> {
     Value<String>? materialName,
     Value<double>? quantity,
     Value<String>? unit,
+    Value<String?>? supplier,
     Value<String?>? observations,
     Value<DateTime>? createdAt,
     Value<SyncStatus>? syncStatus,
@@ -2106,6 +2150,7 @@ class MaterialEntriesCompanion extends UpdateCompanion<MaterialEntry> {
       materialName: materialName ?? this.materialName,
       quantity: quantity ?? this.quantity,
       unit: unit ?? this.unit,
+      supplier: supplier ?? this.supplier,
       observations: observations ?? this.observations,
       createdAt: createdAt ?? this.createdAt,
       syncStatus: syncStatus ?? this.syncStatus,
@@ -2134,6 +2179,9 @@ class MaterialEntriesCompanion extends UpdateCompanion<MaterialEntry> {
     if (unit.present) {
       map['unit'] = Variable<String>(unit.value);
     }
+    if (supplier.present) {
+      map['supplier'] = Variable<String>(supplier.value);
+    }
     if (observations.present) {
       map['observations'] = Variable<String>(observations.value);
     }
@@ -2160,6 +2208,7 @@ class MaterialEntriesCompanion extends UpdateCompanion<MaterialEntry> {
           ..write('materialName: $materialName, ')
           ..write('quantity: $quantity, ')
           ..write('unit: $unit, ')
+          ..write('supplier: $supplier, ')
           ..write('observations: $observations, ')
           ..write('createdAt: $createdAt, ')
           ..write('syncStatus: $syncStatus, ')
@@ -4470,6 +4519,7 @@ typedef $$MaterialEntriesTableCreateCompanionBuilder =
       required String materialName,
       required double quantity,
       required String unit,
+      Value<String?> supplier,
       Value<String?> observations,
       Value<DateTime> createdAt,
       required SyncStatus syncStatus,
@@ -4483,6 +4533,7 @@ typedef $$MaterialEntriesTableUpdateCompanionBuilder =
       Value<String> materialName,
       Value<double> quantity,
       Value<String> unit,
+      Value<String?> supplier,
       Value<String?> observations,
       Value<DateTime> createdAt,
       Value<SyncStatus> syncStatus,
@@ -4525,6 +4576,11 @@ class $$MaterialEntriesTableFilterComposer
 
   ColumnFilters<String> get unit => $composableBuilder(
     column: $table.unit,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get supplier => $composableBuilder(
+    column: $table.supplier,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4584,6 +4640,11 @@ class $$MaterialEntriesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get supplier => $composableBuilder(
+    column: $table.supplier,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get observations => $composableBuilder(
     column: $table.observations,
     builder: (column) => ColumnOrderings(column),
@@ -4628,6 +4689,9 @@ class $$MaterialEntriesTableAnnotationComposer
 
   GeneratedColumn<String> get unit =>
       $composableBuilder(column: $table.unit, builder: (column) => column);
+
+  GeneratedColumn<String> get supplier =>
+      $composableBuilder(column: $table.supplier, builder: (column) => column);
 
   GeneratedColumn<String> get observations => $composableBuilder(
     column: $table.observations,
@@ -4683,6 +4747,7 @@ class $$MaterialEntriesTableTableManager
                 Value<String> materialName = const Value.absent(),
                 Value<double> quantity = const Value.absent(),
                 Value<String> unit = const Value.absent(),
+                Value<String?> supplier = const Value.absent(),
                 Value<String?> observations = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<SyncStatus> syncStatus = const Value.absent(),
@@ -4694,6 +4759,7 @@ class $$MaterialEntriesTableTableManager
                 materialName: materialName,
                 quantity: quantity,
                 unit: unit,
+                supplier: supplier,
                 observations: observations,
                 createdAt: createdAt,
                 syncStatus: syncStatus,
@@ -4707,6 +4773,7 @@ class $$MaterialEntriesTableTableManager
                 required String materialName,
                 required double quantity,
                 required String unit,
+                Value<String?> supplier = const Value.absent(),
                 Value<String?> observations = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 required SyncStatus syncStatus,
@@ -4718,6 +4785,7 @@ class $$MaterialEntriesTableTableManager
                 materialName: materialName,
                 quantity: quantity,
                 unit: unit,
+                supplier: supplier,
                 observations: observations,
                 createdAt: createdAt,
                 syncStatus: syncStatus,
