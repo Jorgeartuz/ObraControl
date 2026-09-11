@@ -2295,6 +2295,17 @@ class $MaterialExitsTable extends MaterialExits
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _responsibleMeta = const VerificationMeta(
+    'responsible',
+  );
+  @override
+  late final GeneratedColumn<String> responsible = GeneratedColumn<String>(
+    'responsible',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _observationsMeta = const VerificationMeta(
     'observations',
   );
@@ -2336,6 +2347,7 @@ class $MaterialExitsTable extends MaterialExits
     quantity,
     unit,
     destination,
+    responsible,
     observations,
     createdAt,
     syncStatus,
@@ -2411,6 +2423,15 @@ class $MaterialExitsTable extends MaterialExits
     } else if (isInserting) {
       context.missing(_destinationMeta);
     }
+    if (data.containsKey('responsible')) {
+      context.handle(
+        _responsibleMeta,
+        responsible.isAcceptableOrUnknown(
+          data['responsible']!,
+          _responsibleMeta,
+        ),
+      );
+    }
     if (data.containsKey('observations')) {
       context.handle(
         _observationsMeta,
@@ -2463,6 +2484,10 @@ class $MaterialExitsTable extends MaterialExits
         DriftSqlType.string,
         data['${effectivePrefix}destination'],
       )!,
+      responsible: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}responsible'],
+      ),
       observations: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}observations'],
@@ -2497,6 +2522,7 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
   final double quantity;
   final String unit;
   final String destination;
+  final String? responsible;
   final String? observations;
   final DateTime createdAt;
   final SyncStatus syncStatus;
@@ -2508,6 +2534,7 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
     required this.quantity,
     required this.unit,
     required this.destination,
+    this.responsible,
     this.observations,
     required this.createdAt,
     required this.syncStatus,
@@ -2522,6 +2549,9 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
     map['quantity'] = Variable<double>(quantity);
     map['unit'] = Variable<String>(unit);
     map['destination'] = Variable<String>(destination);
+    if (!nullToAbsent || responsible != null) {
+      map['responsible'] = Variable<String>(responsible);
+    }
     if (!nullToAbsent || observations != null) {
       map['observations'] = Variable<String>(observations);
     }
@@ -2543,6 +2573,9 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
       quantity: Value(quantity),
       unit: Value(unit),
       destination: Value(destination),
+      responsible: responsible == null && nullToAbsent
+          ? const Value.absent()
+          : Value(responsible),
       observations: observations == null && nullToAbsent
           ? const Value.absent()
           : Value(observations),
@@ -2564,6 +2597,7 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
       quantity: serializer.fromJson<double>(json['quantity']),
       unit: serializer.fromJson<String>(json['unit']),
       destination: serializer.fromJson<String>(json['destination']),
+      responsible: serializer.fromJson<String?>(json['responsible']),
       observations: serializer.fromJson<String?>(json['observations']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       syncStatus: $MaterialExitsTable.$convertersyncStatus.fromJson(
@@ -2582,6 +2616,7 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
       'quantity': serializer.toJson<double>(quantity),
       'unit': serializer.toJson<String>(unit),
       'destination': serializer.toJson<String>(destination),
+      'responsible': serializer.toJson<String?>(responsible),
       'observations': serializer.toJson<String?>(observations),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'syncStatus': serializer.toJson<int>(
@@ -2598,6 +2633,7 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
     double? quantity,
     String? unit,
     String? destination,
+    Value<String?> responsible = const Value.absent(),
     Value<String?> observations = const Value.absent(),
     DateTime? createdAt,
     SyncStatus? syncStatus,
@@ -2609,6 +2645,7 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
     quantity: quantity ?? this.quantity,
     unit: unit ?? this.unit,
     destination: destination ?? this.destination,
+    responsible: responsible.present ? responsible.value : this.responsible,
     observations: observations.present ? observations.value : this.observations,
     createdAt: createdAt ?? this.createdAt,
     syncStatus: syncStatus ?? this.syncStatus,
@@ -2626,6 +2663,9 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
       destination: data.destination.present
           ? data.destination.value
           : this.destination,
+      responsible: data.responsible.present
+          ? data.responsible.value
+          : this.responsible,
       observations: data.observations.present
           ? data.observations.value
           : this.observations,
@@ -2646,6 +2686,7 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
           ..write('quantity: $quantity, ')
           ..write('unit: $unit, ')
           ..write('destination: $destination, ')
+          ..write('responsible: $responsible, ')
           ..write('observations: $observations, ')
           ..write('createdAt: $createdAt, ')
           ..write('syncStatus: $syncStatus')
@@ -2662,6 +2703,7 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
     quantity,
     unit,
     destination,
+    responsible,
     observations,
     createdAt,
     syncStatus,
@@ -2677,6 +2719,7 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
           other.quantity == this.quantity &&
           other.unit == this.unit &&
           other.destination == this.destination &&
+          other.responsible == this.responsible &&
           other.observations == this.observations &&
           other.createdAt == this.createdAt &&
           other.syncStatus == this.syncStatus);
@@ -2690,6 +2733,7 @@ class MaterialExitsCompanion extends UpdateCompanion<MaterialExit> {
   final Value<double> quantity;
   final Value<String> unit;
   final Value<String> destination;
+  final Value<String?> responsible;
   final Value<String?> observations;
   final Value<DateTime> createdAt;
   final Value<SyncStatus> syncStatus;
@@ -2702,6 +2746,7 @@ class MaterialExitsCompanion extends UpdateCompanion<MaterialExit> {
     this.quantity = const Value.absent(),
     this.unit = const Value.absent(),
     this.destination = const Value.absent(),
+    this.responsible = const Value.absent(),
     this.observations = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.syncStatus = const Value.absent(),
@@ -2715,6 +2760,7 @@ class MaterialExitsCompanion extends UpdateCompanion<MaterialExit> {
     required double quantity,
     required String unit,
     required String destination,
+    this.responsible = const Value.absent(),
     this.observations = const Value.absent(),
     this.createdAt = const Value.absent(),
     required SyncStatus syncStatus,
@@ -2735,6 +2781,7 @@ class MaterialExitsCompanion extends UpdateCompanion<MaterialExit> {
     Expression<double>? quantity,
     Expression<String>? unit,
     Expression<String>? destination,
+    Expression<String>? responsible,
     Expression<String>? observations,
     Expression<DateTime>? createdAt,
     Expression<int>? syncStatus,
@@ -2748,6 +2795,7 @@ class MaterialExitsCompanion extends UpdateCompanion<MaterialExit> {
       if (quantity != null) 'quantity': quantity,
       if (unit != null) 'unit': unit,
       if (destination != null) 'destination': destination,
+      if (responsible != null) 'responsible': responsible,
       if (observations != null) 'observations': observations,
       if (createdAt != null) 'created_at': createdAt,
       if (syncStatus != null) 'sync_status': syncStatus,
@@ -2763,6 +2811,7 @@ class MaterialExitsCompanion extends UpdateCompanion<MaterialExit> {
     Value<double>? quantity,
     Value<String>? unit,
     Value<String>? destination,
+    Value<String?>? responsible,
     Value<String?>? observations,
     Value<DateTime>? createdAt,
     Value<SyncStatus>? syncStatus,
@@ -2776,6 +2825,7 @@ class MaterialExitsCompanion extends UpdateCompanion<MaterialExit> {
       quantity: quantity ?? this.quantity,
       unit: unit ?? this.unit,
       destination: destination ?? this.destination,
+      responsible: responsible ?? this.responsible,
       observations: observations ?? this.observations,
       createdAt: createdAt ?? this.createdAt,
       syncStatus: syncStatus ?? this.syncStatus,
@@ -2807,6 +2857,9 @@ class MaterialExitsCompanion extends UpdateCompanion<MaterialExit> {
     if (destination.present) {
       map['destination'] = Variable<String>(destination.value);
     }
+    if (responsible.present) {
+      map['responsible'] = Variable<String>(responsible.value);
+    }
     if (observations.present) {
       map['observations'] = Variable<String>(observations.value);
     }
@@ -2834,6 +2887,7 @@ class MaterialExitsCompanion extends UpdateCompanion<MaterialExit> {
           ..write('quantity: $quantity, ')
           ..write('unit: $unit, ')
           ..write('destination: $destination, ')
+          ..write('responsible: $responsible, ')
           ..write('observations: $observations, ')
           ..write('createdAt: $createdAt, ')
           ..write('syncStatus: $syncStatus, ')
@@ -4825,6 +4879,7 @@ typedef $$MaterialExitsTableCreateCompanionBuilder =
       required double quantity,
       required String unit,
       required String destination,
+      Value<String?> responsible,
       Value<String?> observations,
       Value<DateTime> createdAt,
       required SyncStatus syncStatus,
@@ -4839,6 +4894,7 @@ typedef $$MaterialExitsTableUpdateCompanionBuilder =
       Value<double> quantity,
       Value<String> unit,
       Value<String> destination,
+      Value<String?> responsible,
       Value<String?> observations,
       Value<DateTime> createdAt,
       Value<SyncStatus> syncStatus,
@@ -4886,6 +4942,11 @@ class $$MaterialExitsTableFilterComposer
 
   ColumnFilters<String> get destination => $composableBuilder(
     column: $table.destination,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get responsible => $composableBuilder(
+    column: $table.responsible,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4950,6 +5011,11 @@ class $$MaterialExitsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get responsible => $composableBuilder(
+    column: $table.responsible,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get observations => $composableBuilder(
     column: $table.observations,
     builder: (column) => ColumnOrderings(column),
@@ -4997,6 +5063,11 @@ class $$MaterialExitsTableAnnotationComposer
 
   GeneratedColumn<String> get destination => $composableBuilder(
     column: $table.destination,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get responsible => $composableBuilder(
+    column: $table.responsible,
     builder: (column) => column,
   );
 
@@ -5053,6 +5124,7 @@ class $$MaterialExitsTableTableManager
                 Value<double> quantity = const Value.absent(),
                 Value<String> unit = const Value.absent(),
                 Value<String> destination = const Value.absent(),
+                Value<String?> responsible = const Value.absent(),
                 Value<String?> observations = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<SyncStatus> syncStatus = const Value.absent(),
@@ -5065,6 +5137,7 @@ class $$MaterialExitsTableTableManager
                 quantity: quantity,
                 unit: unit,
                 destination: destination,
+                responsible: responsible,
                 observations: observations,
                 createdAt: createdAt,
                 syncStatus: syncStatus,
@@ -5079,6 +5152,7 @@ class $$MaterialExitsTableTableManager
                 required double quantity,
                 required String unit,
                 required String destination,
+                Value<String?> responsible = const Value.absent(),
                 Value<String?> observations = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 required SyncStatus syncStatus,
@@ -5091,6 +5165,7 @@ class $$MaterialExitsTableTableManager
                 quantity: quantity,
                 unit: unit,
                 destination: destination,
+                responsible: responsible,
                 observations: observations,
                 createdAt: createdAt,
                 syncStatus: syncStatus,

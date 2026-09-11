@@ -47,7 +47,7 @@ class DailyRecordRepository {
       // 3. Procesar Fotos
       for (var tempPath in tempPhotoPaths) {
         final permPath = await _storage.savePhotoPermanently(tempPath, record.id);
-        final photoId = record.id + "_" + DateTime.now().millisecondsSinceEpoch.toString();
+        final photoId = "${record.id}_${DateTime.now().millisecondsSinceEpoch}";
         
         await _db.into(_db.dailyRecordPhotos).insert(DailyRecordPhoto(
           id: photoId,

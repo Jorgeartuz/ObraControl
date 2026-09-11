@@ -77,7 +77,7 @@ class _CreateMaterialEntryPageState extends ConsumerState<CreateMaterialEntryPag
                 Expanded(
                   flex: 2,
                   child: DropdownButtonFormField<String>(
-                    value: _selectedUnit,
+                    initialValue: _selectedUnit,
                     decoration: const InputDecoration(labelText: "Unidad *", border: OutlineInputBorder()),
                     items: _units.map((u) => DropdownMenuItem(value: u, child: Text(u))).toList(),
                     onChanged: (v) => setState(() => _selectedUnit = v!),

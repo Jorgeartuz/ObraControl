@@ -75,9 +75,11 @@ class MaterialExits extends Table {
   RealColumn get quantity => real()();
   TextColumn get unit => text()();
   TextColumn get destination => text()();
+  TextColumn get responsible => text().nullable()(); // Nuevo campo solicitado
   TextColumn get observations => text().nullable()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   IntColumn get syncStatus => integer().map(const EnumIndexConverter<SyncStatus>(SyncStatus.values))();
+  
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -123,8 +125,8 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   // Incrementamos la versión a 4 por la nueva tabla de fotos
-  @override
-  int get schemaVersion => 5;
+ @override
+int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -147,6 +149,9 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 5) {
       await m.addColumn(materialEntries, materialEntries.supplier);
+    }
+    if (from < 6) {
+      await m.addColumn(materialExits, materialExits.responsible);
     }
     },
   );

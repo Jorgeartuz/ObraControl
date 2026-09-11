@@ -19,29 +19,16 @@ class MaterialExitRepository {
 
   // Método para guardar una salida y registrarla en la cola de sincronización
   Future<void> addExit(MaterialExit exit) async {
-    await _db.transaction(() async {
-      // 1. Guardar localmente en tabla materialExits
-      await _db.into(_db.materialExits).insert(exit);
-      
-      // 2. Registrar operación pendiente en SyncQueue
-      await _db.into(_db.syncQueue).insert(
-        SyncQueueCompanion.insert(
-          entityType: 'material_exit',
-          entityId: exit.id,
-          action: 'create',
-          payload: jsonEncode({
-            'id': exit.id,
-            'projectId': exit.projectId,
-            'materialName': exit.materialName,
-            'quantity': exit.quantity,
-            'unit': exit.unit,
-            'destination': exit.destination,
-            'date': exit.date.toIso8601String(),
-          }),
-          syncStatus: SyncStatus.pending,
-        ),
-      );
-    });
+  await _db.transaction(() async {
+    await _db.into(_db.materialExits).insert(exit);
+    await _db.into(_db.syncQueue).insert(SyncQueueCompanion.insert(
+      entityType: 'material_exit',
+      entityId: exit.id,
+      action: 'create',
+      payload: jsonEncode(exit.toJson()),
+      syncStatus: SyncStatus.pending,
+    ));
+  });
   }
 }
 

@@ -64,9 +64,14 @@ try {
         record: record,
         tempPhotoPaths: _tempPhotos,
       );
-      if (mounted) Navigator.pop(context);
+      if (mounted) {
+  Navigator.pop(context);
+}
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error: $e")));
+      if (!mounted) return; // <-- AGREGA ESTA PROTECCIÓN
+  ScaffoldMessenger.of(context).showSnackBar(
+     SnackBar(content: Text("Error: $e")),
+     );
     } finally {
       setState(() => _isSaving = false);
     }
