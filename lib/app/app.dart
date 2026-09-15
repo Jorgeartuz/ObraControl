@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../features/projects/presentation/pages/projects_list_page.dart';
+import 'package:obrafcontrol_test/core/presentation/theme/app_theme.dart';
+import 'package:obrafcontrol_test/features/projects/presentation/pages/projects_list_page.dart';
 
 class ObraControlApp extends StatelessWidget {
   const ObraControlApp({super.key});
@@ -8,7 +9,12 @@ class ObraControlApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'ObraControl',
-      theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.orange),
+      debugShowCheckedModeBanner: false,
+
+      // Aplicamos el Design System centralizado
+      theme: AppTheme.lightTheme,
+
+      // Página inicial definida en el Step 2
       home: const ProjectsListPage(),
     );
   }

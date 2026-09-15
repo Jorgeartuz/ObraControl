@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import '../providers/projects_provider.dart';
+import 'package:obrafcontrol_test/core/database/local_database.dart';
+import 'package:obrafcontrol_test/core/presentation/theme/app_theme.dart';
+import 'package:obrafcontrol_test/core/presentation/widgets/app_card.dart';
+import 'package:obrafcontrol_test/core/presentation/widgets/app_empty_state.dart';
+import 'package:obrafcontrol_test/features/projects/presentation/providers/projects_provider.dart';
+
 import 'create_project_page.dart';
 import 'project_detail_page.dart';
 
@@ -13,51 +18,96 @@ class ProjectsListPage extends ConsumerWidget {
     final projectsAsync = ref.watch(projectsStreamProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Mis obras', style: TextStyle(fontWeight: FontWeight.bold)),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Mis obras')),
       body: projectsAsync.when(
         data: (projects) => projects.isEmpty
-            ? _buildEmptyState(context)
+            ? AppEmptyState(
+                title: "No hay obras registradas",
+                message:
+                    "Comienza a gestionar tu primera obra de construcción.",
+                icon: Icons.architecture,
+                buttonLabel: "Crear primera obra",
+                onButtonPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CreateProjectPage()),
+                ),
+              )
             : ListView.builder(
                 padding: const EdgeInsets.all(16),
                 itemCount: projects.length,
-                itemBuilder: (context, index) {
-                  final project = projects[index];
-                  return _ProjectCard(project: project);
-                },
+                itemBuilder: (context, index) =>
+                    _ProjectCard(project: projects[index]),
               ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, st) => Center(child: Text('Error: $e')),
+        error: (e, _) => Center(child: Text('Error: $e')),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => const CreateProjectPage()),
         ),
-        label: const Text('Crear obra'),
+        label: const Text('Nueva obra'),
         icon: const Icon(Icons.add),
+        backgroundColor: AppColors.accent,
       ),
     );
   }
+}
 
-  Widget _buildEmptyState(BuildContext context) {
-    return Center(
+class _ProjectCard extends StatelessWidget {
+  final Project project;
+  const _ProjectCard({required this.project});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => ProjectDetailPage(project: project)),
+      ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.architecture, size: 80, color: Colors.grey[400]),
-          const SizedBox(height: 16),
-          const Text('¡Aún no tienes obras!', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          const Text('Comienza creando tu primera obra.', style: TextStyle(color: Colors.grey)),
-          const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const CreateProjectPage()),
-            ),
-            child: const Text('Crear mi primera obra'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  project.name,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: AppColors.info.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  project.status.toUpperCase(),
+                  style: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.info,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          _InfoRow(
+            icon: Icons.location_on_outlined,
+            text: project.location ?? "Ubicación no especificada",
+          ),
+          const SizedBox(height: 4),
+          _InfoRow(
+            icon: Icons.calendar_today_outlined,
+            text:
+                "Inicio: ${DateFormat('dd MMM yyyy').format(project.startDate)}",
           ),
         ],
       ),
@@ -65,46 +115,20 @@ class ProjectsListPage extends ConsumerWidget {
   }
 }
 
-class _ProjectCard extends StatelessWidget {
-  final dynamic project; // Usamos dynamic para evitar conflictos con Drift class
-  const _ProjectCard({required this.project});
+class _InfoRow extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  const _InfoRow({required this.icon, required this.text});
 
   @override
-  Widget build(BuildContext context) {
-    final dateFormat = DateFormat('dd/MM/yyyy');
-
-    return Card(
-      elevation: 2,
-      margin: const EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(16),
-        title: Text(project.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (project.location != null && project.location!.isNotEmpty)
-              Row(children: [const Icon(Icons.location_on, size: 14), Text(" ${project.location}")]),
-            const SizedBox(height: 4),
-            Text("Inicio: ${dateFormat.format(project.startDate)}"),
-          ],
-        ),
-        trailing: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: Colors.green[100],
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(
-            project.status.toUpperCase(),
-            style: TextStyle(color: Colors.green[800], fontSize: 10, fontWeight: FontWeight.bold),
-          ),
-        ),
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => ProjectDetailPage(project: project)),
-        ),
+  Widget build(BuildContext context) => Row(
+    children: [
+      Icon(icon, size: 14, color: AppColors.textSecondary),
+      const SizedBox(width: 6),
+      Text(
+        text,
+        style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
       ),
-    );
-  }
+    ],
+  );
 }

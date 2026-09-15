@@ -4,17 +4,14 @@ import 'package:obrafcontrol_test/core/presentation/theme/app_theme.dart';
 
 class StatusBadge extends StatelessWidget {
   final SyncStatus status;
-  
-  const StatusBadge({
-    super.key, 
-    required this.status
-  });
+
+  const StatusBadge({super.key, required this.status});
 
   @override
   Widget build(BuildContext context) {
     final Color color = _getColorForStatus(status);
     final String label = _getLabelForStatus(status);
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
@@ -43,10 +40,10 @@ class StatusBadge extends StatelessWidget {
 
   Color _getColorForStatus(SyncStatus status) {
     return switch (status) {
-      SyncStatus.synced => AppColors.synced,
-      SyncStatus.pending => AppColors.pending,
-      SyncStatus.syncing => Colors.blue,
-      SyncStatus.failed => Colors.red,
+      SyncStatus.synced => AppColors.success,
+      SyncStatus.pending => AppColors.warning,
+      SyncStatus.syncing => AppColors.info,
+      SyncStatus.failed => AppColors.error,
     };
   }
 
