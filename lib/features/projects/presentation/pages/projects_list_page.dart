@@ -6,6 +6,7 @@ import 'package:obrafcontrol_test/core/presentation/theme/app_theme.dart';
 import 'package:obrafcontrol_test/core/presentation/widgets/app_card.dart';
 import 'package:obrafcontrol_test/core/presentation/widgets/app_empty_state.dart';
 import 'package:obrafcontrol_test/features/projects/presentation/providers/projects_provider.dart';
+import 'package:obrafcontrol_test/features/auth/data/auth_repository.dart'; // Import necesario
 
 import 'create_project_page.dart';
 import 'project_detail_page.dart';
@@ -18,7 +19,15 @@ class ProjectsListPage extends ConsumerWidget {
     final projectsAsync = ref.watch(projectsStreamProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Mis obras')),
+      appBar: AppBar(
+        title: const Text('Mis obras'), 
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () => _showLogoutDialog(context, ref),
+          ),
+        ],
+      ),
       body: projectsAsync.when(
         data: (projects) => projects.isEmpty
             ? AppEmptyState(
@@ -53,6 +62,36 @@ class ProjectsListPage extends ConsumerWidget {
     );
   }
 }
+
+void _showLogoutDialog(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Cerrar sesión"),
+        content: const Text("¿Estás seguro de que deseas cerrar sesión?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancelar"),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              try {
+                await ref.read(authRepositoryProvider).signOut();
+              } catch (e) {
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("No se pudo cerrar sesión. Inténtalo nuevamente.")),
+                );
+              }
+            },
+            child: const Text("Cerrar sesión", style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
 
 class _ProjectCard extends StatelessWidget {
   final Project project;

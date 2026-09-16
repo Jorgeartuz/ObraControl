@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'app/app.dart';
-import 'core/database/local_database.dart';
+import 'package:obrafcontrol_test/app/app.dart';
+import 'package:obrafcontrol_test/core/database/local_database.dart';
 
-// Proveedor global de la base de datos
+// Proveedor global de la base de datos (Drift)
 final databaseProvider = Provider<AppDatabase>((ref) {
   final db = AppDatabase();
   ref.onDispose(() => db.close());
@@ -16,28 +16,29 @@ final databaseProvider = Provider<AppDatabase>((ref) {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 1. Cargar variables de entorno
-  try {
-    await dotenv.load(fileName: ".env");
-  } catch (e) {
-    debugPrint("Archivo .env no encontrado, continuando sin él.");
-  }
+ // 1. Cargar variables de entorno
+  await dotenv.load(fileName: ".env").catchError((e) {
+    debugPrint("Error cargando .env: $e");
+    return null;
+  });
 
-  // 2. Inicializar Supabase
+  // 2. Obtener y verificar llaves
   final url = dotenv.maybeGet('SUPABASE_URL');
   final anonKey = dotenv.maybeGet('SUPABASE_ANON_KEY');
 
-  if (url != null && anonKey != null && url.isNotEmpty && anonKey.isNotEmpty) {
+debugPrint("Supabase URL: $url"); // <- REVISA ESTO EN TU CONSOLA
+  debugPrint("Supabase Key: ${anonKey != null ? 'Presente' : 'Ausente'}");
+
+  // 3. Inicializar SOLAMENTE si hay datos
+  if (url != null && url.isNotEmpty) {
     await Supabase.initialize(
       url: url,
-      anonKey: anonKey,
+      anonKey: anonKey ?? '',
     );
+    debugPrint("Supabase inicializado correctamente");
+  } else {
+    debugPrint("ADVERTENCIA: Supabase NO inicializado por falta de variables");
   }
 
-  // 3. Ejecutar la aplicación
-  runApp(
-    const ProviderScope(
-      child: ObraControlApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: ObraControlApp()));
 }
