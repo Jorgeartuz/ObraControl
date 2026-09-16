@@ -23,9 +23,13 @@ class AuthRepository {
     }
   }
 
-  Future<void> signUp(String email, String password) async {
+  Future<void> signUp(String fullName, String email, String password) async {
     try {
-      await _client.auth.signUp(email: email, password: password);
+      await _client.auth.signUp(
+        email: email,
+        password: password,
+        data: {'full_name': fullName},
+      );
     } on AuthException catch (e) {
       debugPrint('--- SUPABASE AUTH ERROR ---');
       debugPrint('Message: ${e.message}');
