@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/database/local_database.dart';
-import '../../../../core/sync/data/project_repository.dart';
+import 'package:obrafcontrol_test/features/projects/data/project_repository.dart';
 
 class CreateProjectPage extends ConsumerStatefulWidget {
   const CreateProjectPage({super.key});

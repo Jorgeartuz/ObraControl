@@ -20,18 +20,13 @@ class ModuleCard extends StatelessWidget {
   });
 
   Color _getColor(ModuleCardVariant variant) {
-    switch (variant) {
-      case ModuleCardVariant.primary:
-        return AppColors.primary;
-      case ModuleCardVariant.info:
-        return AppColors.info;
-      case ModuleCardVariant.success:
-        return AppColors.success;
-      case ModuleCardVariant.warning:
-        return AppColors.warning;
-      case ModuleCardVariant.error:
-        return AppColors.error;
-    }
+    return switch (variant) {
+      ModuleCardVariant.primary => AppColors.primary,
+      ModuleCardVariant.info => AppColors.info,
+      ModuleCardVariant.success => AppColors.success,
+      ModuleCardVariant.warning => AppColors.warning,
+      ModuleCardVariant.error => AppColors.error,
+    };
   }
 
   @override
@@ -39,9 +34,15 @@ class ModuleCard extends StatelessWidget {
     final color = _getColor(variant);
 
     return Card(
-      clipBehavior: Clip.antiAlias,
+      elevation: 0,
+      color: AppColors.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: AppColors.border),
+      ),
       child: InkWell(
         onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -60,18 +61,16 @@ class ModuleCard extends StatelessWidget {
                 title,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.bold, 
                   fontSize: 14,
+                  color: AppColors.textPrimary
                 ),
               ),
               const SizedBox(height: 4),
               Text(
                 subtitle,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: AppColors.textSecondary,
-                ),
+                style: const TextStyle(fontSize: 10, color: AppColors.textSecondary),
               ),
             ],
           ),

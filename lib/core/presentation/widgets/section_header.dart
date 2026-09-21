@@ -3,8 +3,11 @@ import 'package:obrafcontrol_test/core/presentation/theme/app_theme.dart';
 
 class SectionHeader extends StatelessWidget {
   final String title;
-
-  const SectionHeader({super.key, required this.title});
+  
+  const SectionHeader({
+    super.key, 
+    required this.title
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +16,10 @@ class SectionHeader extends StatelessWidget {
       child: Text(
         title,
         style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
+          fontSize: 18, 
+          fontWeight: FontWeight.bold, 
           color: AppColors.textPrimary,
+          letterSpacing: 0.2,
         ),
       ),
     );

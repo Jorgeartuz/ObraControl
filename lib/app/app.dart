@@ -12,8 +12,9 @@ class ObraControlApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
 
       // Aplicamos el Design System centralizado
-      theme: AppTheme.lightTheme,
-
+      theme: AppTheme.lightTheme.copyWith(
+  textTheme: Typography.englishLike2018.apply(bodyColor: AppColors.textPrimary),
+),
       // Página inicial definida en el Step 2
       home: const AuthGate(),
     );

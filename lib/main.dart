@@ -5,40 +5,59 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:obrafcontrol_test/app/app.dart';
 import 'package:obrafcontrol_test/core/database/local_database.dart';
+import 'package:obrafcontrol_test/core/sync/sync_engine.dart';
+import 'package:obrafcontrol_test/core/network/connectivity_service.dart';
+import 'package:obrafcontrol_test/features/projects/data/project_repository.dart';
 
-// Proveedor global de la base de datos (Drift)
+// Proveedor de la base de datos
 final databaseProvider = Provider<AppDatabase>((ref) {
   final db = AppDatabase();
   ref.onDispose(() => db.close());
   return db;
 });
 
+// Provider del motor de sincronización
+final syncEngineProvider = Provider((ref) => SyncEngine(
+      ref.watch(databaseProvider),
+    ));
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
- // 1. Cargar variables de entorno
-  await dotenv.load(fileName: ".env").catchError((e) {
-    debugPrint("Error cargando .env: $e");
-    return null;
-  });
+  await dotenv.load(fileName: ".env").catchError((e) => null);
 
-  // 2. Obtener y verificar llaves
   final url = dotenv.maybeGet('SUPABASE_URL');
   final anonKey = dotenv.maybeGet('SUPABASE_ANON_KEY');
 
-debugPrint("Supabase URL: $url"); // <- REVISA ESTO EN TU CONSOLA
-  debugPrint("Supabase Key: ${anonKey != null ? 'Presente' : 'Ausente'}");
-
-  // 3. Inicializar SOLAMENTE si hay datos
-  if (url != null && url.isNotEmpty) {
-    await Supabase.initialize(
-      url: url,
-      anonKey: anonKey ?? '',
-    );
-    debugPrint("Supabase inicializado correctamente");
-  } else {
-    debugPrint("ADVERTENCIA: Supabase NO inicializado por falta de variables");
+  if (url != null && anonKey != null && url.isNotEmpty && anonKey.isNotEmpty) {
+    await Supabase.initialize(url: url, anonKey: anonKey);
   }
 
-  runApp(const ProviderScope(child: ObraControlApp()));
+  runApp(
+    const ProviderScope(
+      child: AppInitializer(),
+    ),
+  );
+}
+
+// Widget intermedio para escuchar cambios de red tras el inicio de la app
+class AppInitializer extends ConsumerWidget {
+  const AppInitializer({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Escuchar cambios de conectividad
+    ref.listen(connectivityStreamProvider, (prev, next) async {
+ if (next.value == NetworkStatus.online && Supabase.instance.client.auth.currentUser != null) {
+    final syncEngine = ref.read(syncEngineProvider);
+    final projectRepo = ref.read(projectRepositoryProvider);
+    
+    // Secuencia obligatoria
+    await syncEngine.processSyncQueue();
+    await projectRepo.pullProjects();
+  }
+});
+
+    return const ObraControlApp();
+  }
 }

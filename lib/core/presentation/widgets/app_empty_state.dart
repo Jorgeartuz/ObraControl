@@ -26,30 +26,29 @@ class AppEmptyState extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              icon,
-              size: 64,
-              color: AppColors.textSecondary.withValues(alpha: 0.3),
+              icon, 
+              size: 64, 
+              color: AppColors.textSecondary.withValues(alpha: 0.3)
             ),
             const SizedBox(height: 16),
             Text(
-              title,
+              title, 
               style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
+                fontSize: 18, 
+                fontWeight: FontWeight.bold, 
+                color: AppColors.textPrimary
+              )
             ),
             const SizedBox(height: 8),
             Text(
-              message,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.textSecondary),
+              message, 
+              textAlign: TextAlign.center, 
+              style: const TextStyle(color: AppColors.textSecondary)
             ),
             const SizedBox(height: 24),
-            FilledButton.icon(
+            ElevatedButton(
               onPressed: onButtonPressed,
-              icon: const Icon(Icons.add),
-              label: Text(buttonLabel),
+              child: Text(buttonLabel),
             ),
           ],
         ),
