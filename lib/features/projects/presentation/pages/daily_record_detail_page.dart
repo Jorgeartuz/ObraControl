@@ -4,10 +4,38 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:obrafcontrol_test/core/database/local_database.dart';
 import 'package:obrafcontrol_test/features/daily_records/data/daily_record_repository.dart';
+import 'create_daily_record_page.dart';
 
 class DailyRecordDetailPage extends ConsumerWidget {
   final DailyRecord record;
   const DailyRecordDetailPage({super.key, required this.record});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final recordAsync = ref.watch(dailyRecordProvider(record.id));
+
+    return recordAsync.when(
+      data: (currentRecord) {
+        if (currentRecord == null) {
+          return Scaffold(
+            appBar: AppBar(title: const Text("Detalle del Registro")),
+            body: const Center(child: Text("Este registro ya no existe.")),
+          );
+        }
+        return _DailyRecordDetailView(record: currentRecord);
+      },
+      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (error, _) => Scaffold(
+        appBar: AppBar(title: const Text("Detalle del Registro")),
+        body: Center(child: Text("Error al cargar el registro: $error")),
+      ),
+    );
+  }
+}
+
+class _DailyRecordDetailView extends ConsumerWidget {
+  final DailyRecord record;
+  const _DailyRecordDetailView({required this.record});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -16,6 +44,26 @@ class DailyRecordDetailPage extends ConsumerWidget {
         title: const Text("Detalle del Registro"),
         backgroundColor: Colors.blueGrey[900],
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit_outlined),
+            tooltip: 'Editar registro',
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => CreateDailyRecordPage(
+                  projectId: record.projectId,
+                  record: record,
+                ),
+              ),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete_outline),
+            tooltip: 'Eliminar registro',
+            onPressed: () => _deleteRecord(context, ref, record),
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
@@ -59,7 +107,7 @@ class DailyRecordDetailPage extends ConsumerWidget {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
           const SizedBox(height: 12),
-          
+
           FutureBuilder<List<DailyRecordPhoto>>(
             future: ref.read(dailyRecordRepositoryProvider).getPhotosForRecord(record.id),
             builder: (context, snapshot) {
@@ -105,6 +153,45 @@ class DailyRecordDetailPage extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _deleteRecord(
+    BuildContext context,
+    WidgetRef ref,
+    DailyRecord record,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Eliminar registro'),
+        content: const Text('¿Seguro que deseas eliminar este registro diario?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+
+    try {
+      await ref.read(dailyRecordRepositoryProvider).deleteRecord(record.id);
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Registro eliminado correctamente.')),
+      );
+      Navigator.pop(context);
+    } catch (error) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No se pudo eliminar el registro: $error')),
+      );
+    }
   }
 
   // Función sencilla para ver la foto en grande al tocarla

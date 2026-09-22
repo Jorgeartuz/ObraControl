@@ -24,7 +24,19 @@ class MaterialEntriesListPage extends ConsumerWidget {
           return ListView.builder(
             padding: const EdgeInsets.all(16),
             itemCount: entries.length,
-            itemBuilder: (context, index) => _MaterialEntryCard(entry: entries[index]),
+            itemBuilder: (context, index) => _MaterialEntryCard(
+              entry: entries[index],
+              onEdit: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => CreateMaterialEntryPage(
+                    projectId: project.id,
+                    entry: entries[index],
+                  ),
+                ),
+              ),
+              onDelete: () => _deleteEntry(context, ref, entries[index]),
+            ),
           );
         },
       ),
@@ -49,11 +61,55 @@ class MaterialEntriesListPage extends ConsumerWidget {
       ],
     ),
   );
+
+  Future<void> _deleteEntry(
+    BuildContext context,
+    WidgetRef ref,
+    MaterialEntry entry,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Eliminar entrada'),
+        content: Text('¿Seguro que deseas eliminar "${entry.materialName}"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+
+    try {
+      await ref.read(materialEntryRepositoryProvider).deleteEntry(entry.id);
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Entrada eliminada correctamente.')),
+      );
+    } catch (error) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No se pudo eliminar la entrada: $error')),
+      );
+    }
+  }
 }
 
 class _MaterialEntryCard extends StatelessWidget {
   final MaterialEntry entry;
-  const _MaterialEntryCard({required this.entry});
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+  const _MaterialEntryCard({
+    required this.entry,
+    required this.onEdit,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -67,11 +123,24 @@ class _MaterialEntryCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(entry.materialName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Expanded(
+                  child: Text(entry.materialName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(color: Colors.amber.shade100, borderRadius: BorderRadius.circular(12)),
                   child: Text(entry.syncStatus.name.toUpperCase(), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                ),
+                PopupMenuButton<String>(
+                  icon: const Icon(Icons.more_vert),
+                  onSelected: (value) {
+                    if (value == 'edit') onEdit();
+                    if (value == 'delete') onDelete();
+                  },
+                  itemBuilder: (context) => const [
+                    PopupMenuItem(value: 'edit', child: Text('Editar')),
+                    PopupMenuItem(value: 'delete', child: Text('Eliminar')),
+                  ],
                 ),
               ],
             ),

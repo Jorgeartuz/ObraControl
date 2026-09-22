@@ -26,12 +26,7 @@ class SyncEngine {
           const SyncQueueCompanion(syncStatus: Value(SyncStatus.syncing)),
         );
 
-        if (item.entityType != 'project') {
-          throw UnsupportedError(
-            'Unsupported sync entity type: ${item.entityType}',
-          );
-        }
-        await processProjectSync(item);
+        await processEntitySync(item);
 
         // Marcar como sincronizado
         await (_db.update(
@@ -59,25 +54,37 @@ class SyncEngine {
   }
 
   /// Procesa la sincronización específica para Proyectos (Create/Update/Delete)
-  Future<void> processProjectSync(SyncQueueItem item) async {
+  Future<void> processEntitySync(SyncQueueItem item) async {
     final client = Supabase.instance.client;
+    final table = _remoteTableFor(item.entityType);
 
     if (item.action == 'delete') {
-      // Borrado directo en Supabase usando el ID capturado en la cola
-      await client.from('projects').delete().eq('id', item.entityId);
+      await client.from(table).delete().eq('id', item.entityId);
     } else {
-      // Para create/update, usamos el payload JSON almacenado
       final Map<String, dynamic> payload = jsonDecode(item.payload);
-      await client.from('projects').upsert(payload);
+      await client.from(table).upsert(payload);
     }
+  }
+
+  String _remoteTableFor(String entityType) {
+    const tables = {
+      'project': 'projects',
+      'daily_record': 'daily_records',
+      'material_entry': 'material_entries',
+      'material_exit': 'material_exits',
+      'machinery': 'machinery',
+    };
+    final table = tables[entityType];
+    if (table == null) {
+      throw UnsupportedError('Unsupported sync entity type: $entityType');
+    }
+    return table;
   }
 
   Future<void> restoreConnectivityFailures() async {
     final failedItems =
         await (_db.select(_db.syncQueue)..where(
-              (table) =>
-                  table.entityType.equals('project') &
-                  table.syncStatus.equals(SyncStatus.failed.index),
+              (table) => table.syncStatus.equals(SyncStatus.failed.index),
             ))
             .get();
 

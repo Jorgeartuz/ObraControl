@@ -1203,6 +1203,17 @@ class $DailyRecordsTable extends DailyRecords
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<String> createdBy = GeneratedColumn<String>(
+    'created_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   late final GeneratedColumnWithTypeConverter<SyncStatus, int> syncStatus =
       GeneratedColumn<int>(
@@ -1221,6 +1232,7 @@ class $DailyRecordsTable extends DailyRecords
     observations,
     createdAt,
     updatedAt,
+    createdBy,
     syncStatus,
   ];
   @override
@@ -1288,6 +1300,12 @@ class $DailyRecordsTable extends DailyRecords
         updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
       );
     }
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    }
     return context;
   }
 
@@ -1325,6 +1343,10 @@ class $DailyRecordsTable extends DailyRecords
         DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
       )!,
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_by'],
+      ),
       syncStatus: $DailyRecordsTable.$convertersyncStatus.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.int,
@@ -1351,6 +1373,7 @@ class DailyRecord extends DataClass implements Insertable<DailyRecord> {
   final String? observations;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final String? createdBy;
   final SyncStatus syncStatus;
   const DailyRecord({
     required this.id,
@@ -1360,6 +1383,7 @@ class DailyRecord extends DataClass implements Insertable<DailyRecord> {
     this.observations,
     required this.createdAt,
     required this.updatedAt,
+    this.createdBy,
     required this.syncStatus,
   });
   @override
@@ -1374,6 +1398,9 @@ class DailyRecord extends DataClass implements Insertable<DailyRecord> {
     }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<String>(createdBy);
+    }
     {
       map['sync_status'] = Variable<int>(
         $DailyRecordsTable.$convertersyncStatus.toSql(syncStatus),
@@ -1393,6 +1420,9 @@ class DailyRecord extends DataClass implements Insertable<DailyRecord> {
           : Value(observations),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
       syncStatus: Value(syncStatus),
     );
   }
@@ -1410,6 +1440,7 @@ class DailyRecord extends DataClass implements Insertable<DailyRecord> {
       observations: serializer.fromJson<String?>(json['observations']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      createdBy: serializer.fromJson<String?>(json['createdBy']),
       syncStatus: $DailyRecordsTable.$convertersyncStatus.fromJson(
         serializer.fromJson<int>(json['syncStatus']),
       ),
@@ -1426,6 +1457,7 @@ class DailyRecord extends DataClass implements Insertable<DailyRecord> {
       'observations': serializer.toJson<String?>(observations),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'createdBy': serializer.toJson<String?>(createdBy),
       'syncStatus': serializer.toJson<int>(
         $DailyRecordsTable.$convertersyncStatus.toJson(syncStatus),
       ),
@@ -1440,6 +1472,7 @@ class DailyRecord extends DataClass implements Insertable<DailyRecord> {
     Value<String?> observations = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
+    Value<String?> createdBy = const Value.absent(),
     SyncStatus? syncStatus,
   }) => DailyRecord(
     id: id ?? this.id,
@@ -1449,6 +1482,7 @@ class DailyRecord extends DataClass implements Insertable<DailyRecord> {
     observations: observations.present ? observations.value : this.observations,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
+    createdBy: createdBy.present ? createdBy.value : this.createdBy,
     syncStatus: syncStatus ?? this.syncStatus,
   );
   DailyRecord copyWithCompanion(DailyRecordsCompanion data) {
@@ -1464,6 +1498,7 @@ class DailyRecord extends DataClass implements Insertable<DailyRecord> {
           : this.observations,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
       syncStatus: data.syncStatus.present
           ? data.syncStatus.value
           : this.syncStatus,
@@ -1480,6 +1515,7 @@ class DailyRecord extends DataClass implements Insertable<DailyRecord> {
           ..write('observations: $observations, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
+          ..write('createdBy: $createdBy, ')
           ..write('syncStatus: $syncStatus')
           ..write(')'))
         .toString();
@@ -1494,6 +1530,7 @@ class DailyRecord extends DataClass implements Insertable<DailyRecord> {
     observations,
     createdAt,
     updatedAt,
+    createdBy,
     syncStatus,
   );
   @override
@@ -1507,6 +1544,7 @@ class DailyRecord extends DataClass implements Insertable<DailyRecord> {
           other.observations == this.observations &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
+          other.createdBy == this.createdBy &&
           other.syncStatus == this.syncStatus);
 }
 
@@ -1518,6 +1556,7 @@ class DailyRecordsCompanion extends UpdateCompanion<DailyRecord> {
   final Value<String?> observations;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
+  final Value<String?> createdBy;
   final Value<SyncStatus> syncStatus;
   final Value<int> rowid;
   const DailyRecordsCompanion({
@@ -1528,6 +1567,7 @@ class DailyRecordsCompanion extends UpdateCompanion<DailyRecord> {
     this.observations = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
     this.syncStatus = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -1539,6 +1579,7 @@ class DailyRecordsCompanion extends UpdateCompanion<DailyRecord> {
     this.observations = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
     required SyncStatus syncStatus,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -1554,6 +1595,7 @@ class DailyRecordsCompanion extends UpdateCompanion<DailyRecord> {
     Expression<String>? observations,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
+    Expression<String>? createdBy,
     Expression<int>? syncStatus,
     Expression<int>? rowid,
   }) {
@@ -1565,6 +1607,7 @@ class DailyRecordsCompanion extends UpdateCompanion<DailyRecord> {
       if (observations != null) 'observations': observations,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
+      if (createdBy != null) 'created_by': createdBy,
       if (syncStatus != null) 'sync_status': syncStatus,
       if (rowid != null) 'rowid': rowid,
     });
@@ -1578,6 +1621,7 @@ class DailyRecordsCompanion extends UpdateCompanion<DailyRecord> {
     Value<String?>? observations,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
+    Value<String?>? createdBy,
     Value<SyncStatus>? syncStatus,
     Value<int>? rowid,
   }) {
@@ -1589,6 +1633,7 @@ class DailyRecordsCompanion extends UpdateCompanion<DailyRecord> {
       observations: observations ?? this.observations,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      createdBy: createdBy ?? this.createdBy,
       syncStatus: syncStatus ?? this.syncStatus,
       rowid: rowid ?? this.rowid,
     );
@@ -1618,6 +1663,9 @@ class DailyRecordsCompanion extends UpdateCompanion<DailyRecord> {
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
+    if (createdBy.present) {
+      map['created_by'] = Variable<String>(createdBy.value);
+    }
     if (syncStatus.present) {
       map['sync_status'] = Variable<int>(
         $DailyRecordsTable.$convertersyncStatus.toSql(syncStatus.value),
@@ -1639,6 +1687,7 @@ class DailyRecordsCompanion extends UpdateCompanion<DailyRecord> {
           ..write('observations: $observations, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
+          ..write('createdBy: $createdBy, ')
           ..write('syncStatus: $syncStatus, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -1746,6 +1795,17 @@ class $MaterialEntriesTable extends MaterialEntries
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<String> createdBy = GeneratedColumn<String>(
+    'created_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   late final GeneratedColumnWithTypeConverter<SyncStatus, int> syncStatus =
       GeneratedColumn<int>(
@@ -1766,6 +1826,7 @@ class $MaterialEntriesTable extends MaterialEntries
     supplier,
     observations,
     createdAt,
+    createdBy,
     syncStatus,
   ];
   @override
@@ -1849,6 +1910,12 @@ class $MaterialEntriesTable extends MaterialEntries
         createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
       );
     }
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    }
     return context;
   }
 
@@ -1894,6 +1961,10 @@ class $MaterialEntriesTable extends MaterialEntries
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_by'],
+      ),
       syncStatus: $MaterialEntriesTable.$convertersyncStatus.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.int,
@@ -1922,6 +1993,7 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
   final String? supplier;
   final String? observations;
   final DateTime createdAt;
+  final String? createdBy;
   final SyncStatus syncStatus;
   const MaterialEntry({
     required this.id,
@@ -1933,6 +2005,7 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
     this.supplier,
     this.observations,
     required this.createdAt,
+    this.createdBy,
     required this.syncStatus,
   });
   @override
@@ -1951,6 +2024,9 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
       map['observations'] = Variable<String>(observations);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<String>(createdBy);
+    }
     {
       map['sync_status'] = Variable<int>(
         $MaterialEntriesTable.$convertersyncStatus.toSql(syncStatus),
@@ -1974,6 +2050,9 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
           ? const Value.absent()
           : Value(observations),
       createdAt: Value(createdAt),
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
       syncStatus: Value(syncStatus),
     );
   }
@@ -1993,6 +2072,7 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
       supplier: serializer.fromJson<String?>(json['supplier']),
       observations: serializer.fromJson<String?>(json['observations']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      createdBy: serializer.fromJson<String?>(json['createdBy']),
       syncStatus: $MaterialEntriesTable.$convertersyncStatus.fromJson(
         serializer.fromJson<int>(json['syncStatus']),
       ),
@@ -2011,6 +2091,7 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
       'supplier': serializer.toJson<String?>(supplier),
       'observations': serializer.toJson<String?>(observations),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'createdBy': serializer.toJson<String?>(createdBy),
       'syncStatus': serializer.toJson<int>(
         $MaterialEntriesTable.$convertersyncStatus.toJson(syncStatus),
       ),
@@ -2027,6 +2108,7 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
     Value<String?> supplier = const Value.absent(),
     Value<String?> observations = const Value.absent(),
     DateTime? createdAt,
+    Value<String?> createdBy = const Value.absent(),
     SyncStatus? syncStatus,
   }) => MaterialEntry(
     id: id ?? this.id,
@@ -2038,6 +2120,7 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
     supplier: supplier.present ? supplier.value : this.supplier,
     observations: observations.present ? observations.value : this.observations,
     createdAt: createdAt ?? this.createdAt,
+    createdBy: createdBy.present ? createdBy.value : this.createdBy,
     syncStatus: syncStatus ?? this.syncStatus,
   );
   MaterialEntry copyWithCompanion(MaterialEntriesCompanion data) {
@@ -2055,6 +2138,7 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
           ? data.observations.value
           : this.observations,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
       syncStatus: data.syncStatus.present
           ? data.syncStatus.value
           : this.syncStatus,
@@ -2073,6 +2157,7 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
           ..write('supplier: $supplier, ')
           ..write('observations: $observations, ')
           ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
           ..write('syncStatus: $syncStatus')
           ..write(')'))
         .toString();
@@ -2089,6 +2174,7 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
     supplier,
     observations,
     createdAt,
+    createdBy,
     syncStatus,
   );
   @override
@@ -2104,6 +2190,7 @@ class MaterialEntry extends DataClass implements Insertable<MaterialEntry> {
           other.supplier == this.supplier &&
           other.observations == this.observations &&
           other.createdAt == this.createdAt &&
+          other.createdBy == this.createdBy &&
           other.syncStatus == this.syncStatus);
 }
 
@@ -2117,6 +2204,7 @@ class MaterialEntriesCompanion extends UpdateCompanion<MaterialEntry> {
   final Value<String?> supplier;
   final Value<String?> observations;
   final Value<DateTime> createdAt;
+  final Value<String?> createdBy;
   final Value<SyncStatus> syncStatus;
   final Value<int> rowid;
   const MaterialEntriesCompanion({
@@ -2129,6 +2217,7 @@ class MaterialEntriesCompanion extends UpdateCompanion<MaterialEntry> {
     this.supplier = const Value.absent(),
     this.observations = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
     this.syncStatus = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -2142,6 +2231,7 @@ class MaterialEntriesCompanion extends UpdateCompanion<MaterialEntry> {
     this.supplier = const Value.absent(),
     this.observations = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
     required SyncStatus syncStatus,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -2161,6 +2251,7 @@ class MaterialEntriesCompanion extends UpdateCompanion<MaterialEntry> {
     Expression<String>? supplier,
     Expression<String>? observations,
     Expression<DateTime>? createdAt,
+    Expression<String>? createdBy,
     Expression<int>? syncStatus,
     Expression<int>? rowid,
   }) {
@@ -2174,6 +2265,7 @@ class MaterialEntriesCompanion extends UpdateCompanion<MaterialEntry> {
       if (supplier != null) 'supplier': supplier,
       if (observations != null) 'observations': observations,
       if (createdAt != null) 'created_at': createdAt,
+      if (createdBy != null) 'created_by': createdBy,
       if (syncStatus != null) 'sync_status': syncStatus,
       if (rowid != null) 'rowid': rowid,
     });
@@ -2189,6 +2281,7 @@ class MaterialEntriesCompanion extends UpdateCompanion<MaterialEntry> {
     Value<String?>? supplier,
     Value<String?>? observations,
     Value<DateTime>? createdAt,
+    Value<String?>? createdBy,
     Value<SyncStatus>? syncStatus,
     Value<int>? rowid,
   }) {
@@ -2202,6 +2295,7 @@ class MaterialEntriesCompanion extends UpdateCompanion<MaterialEntry> {
       supplier: supplier ?? this.supplier,
       observations: observations ?? this.observations,
       createdAt: createdAt ?? this.createdAt,
+      createdBy: createdBy ?? this.createdBy,
       syncStatus: syncStatus ?? this.syncStatus,
       rowid: rowid ?? this.rowid,
     );
@@ -2237,6 +2331,9 @@ class MaterialEntriesCompanion extends UpdateCompanion<MaterialEntry> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
+    if (createdBy.present) {
+      map['created_by'] = Variable<String>(createdBy.value);
+    }
     if (syncStatus.present) {
       map['sync_status'] = Variable<int>(
         $MaterialEntriesTable.$convertersyncStatus.toSql(syncStatus.value),
@@ -2260,6 +2357,7 @@ class MaterialEntriesCompanion extends UpdateCompanion<MaterialEntry> {
           ..write('supplier: $supplier, ')
           ..write('observations: $observations, ')
           ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
           ..write('syncStatus: $syncStatus, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -2378,6 +2476,17 @@ class $MaterialExitsTable extends MaterialExits
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<String> createdBy = GeneratedColumn<String>(
+    'created_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   late final GeneratedColumnWithTypeConverter<SyncStatus, int> syncStatus =
       GeneratedColumn<int>(
@@ -2399,6 +2508,7 @@ class $MaterialExitsTable extends MaterialExits
     responsible,
     observations,
     createdAt,
+    createdBy,
     syncStatus,
   ];
   @override
@@ -2496,6 +2606,12 @@ class $MaterialExitsTable extends MaterialExits
         createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
       );
     }
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    }
     return context;
   }
 
@@ -2545,6 +2661,10 @@ class $MaterialExitsTable extends MaterialExits
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_by'],
+      ),
       syncStatus: $MaterialExitsTable.$convertersyncStatus.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.int,
@@ -2574,6 +2694,7 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
   final String? responsible;
   final String? observations;
   final DateTime createdAt;
+  final String? createdBy;
   final SyncStatus syncStatus;
   const MaterialExit({
     required this.id,
@@ -2586,6 +2707,7 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
     this.responsible,
     this.observations,
     required this.createdAt,
+    this.createdBy,
     required this.syncStatus,
   });
   @override
@@ -2605,6 +2727,9 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
       map['observations'] = Variable<String>(observations);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<String>(createdBy);
+    }
     {
       map['sync_status'] = Variable<int>(
         $MaterialExitsTable.$convertersyncStatus.toSql(syncStatus),
@@ -2629,6 +2754,9 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
           ? const Value.absent()
           : Value(observations),
       createdAt: Value(createdAt),
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
       syncStatus: Value(syncStatus),
     );
   }
@@ -2649,6 +2777,7 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
       responsible: serializer.fromJson<String?>(json['responsible']),
       observations: serializer.fromJson<String?>(json['observations']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      createdBy: serializer.fromJson<String?>(json['createdBy']),
       syncStatus: $MaterialExitsTable.$convertersyncStatus.fromJson(
         serializer.fromJson<int>(json['syncStatus']),
       ),
@@ -2668,6 +2797,7 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
       'responsible': serializer.toJson<String?>(responsible),
       'observations': serializer.toJson<String?>(observations),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'createdBy': serializer.toJson<String?>(createdBy),
       'syncStatus': serializer.toJson<int>(
         $MaterialExitsTable.$convertersyncStatus.toJson(syncStatus),
       ),
@@ -2685,6 +2815,7 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
     Value<String?> responsible = const Value.absent(),
     Value<String?> observations = const Value.absent(),
     DateTime? createdAt,
+    Value<String?> createdBy = const Value.absent(),
     SyncStatus? syncStatus,
   }) => MaterialExit(
     id: id ?? this.id,
@@ -2697,6 +2828,7 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
     responsible: responsible.present ? responsible.value : this.responsible,
     observations: observations.present ? observations.value : this.observations,
     createdAt: createdAt ?? this.createdAt,
+    createdBy: createdBy.present ? createdBy.value : this.createdBy,
     syncStatus: syncStatus ?? this.syncStatus,
   );
   MaterialExit copyWithCompanion(MaterialExitsCompanion data) {
@@ -2719,6 +2851,7 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
           ? data.observations.value
           : this.observations,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
       syncStatus: data.syncStatus.present
           ? data.syncStatus.value
           : this.syncStatus,
@@ -2738,6 +2871,7 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
           ..write('responsible: $responsible, ')
           ..write('observations: $observations, ')
           ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
           ..write('syncStatus: $syncStatus')
           ..write(')'))
         .toString();
@@ -2755,6 +2889,7 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
     responsible,
     observations,
     createdAt,
+    createdBy,
     syncStatus,
   );
   @override
@@ -2771,6 +2906,7 @@ class MaterialExit extends DataClass implements Insertable<MaterialExit> {
           other.responsible == this.responsible &&
           other.observations == this.observations &&
           other.createdAt == this.createdAt &&
+          other.createdBy == this.createdBy &&
           other.syncStatus == this.syncStatus);
 }
 
@@ -2785,6 +2921,7 @@ class MaterialExitsCompanion extends UpdateCompanion<MaterialExit> {
   final Value<String?> responsible;
   final Value<String?> observations;
   final Value<DateTime> createdAt;
+  final Value<String?> createdBy;
   final Value<SyncStatus> syncStatus;
   final Value<int> rowid;
   const MaterialExitsCompanion({
@@ -2798,6 +2935,7 @@ class MaterialExitsCompanion extends UpdateCompanion<MaterialExit> {
     this.responsible = const Value.absent(),
     this.observations = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
     this.syncStatus = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -2812,6 +2950,7 @@ class MaterialExitsCompanion extends UpdateCompanion<MaterialExit> {
     this.responsible = const Value.absent(),
     this.observations = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
     required SyncStatus syncStatus,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -2833,6 +2972,7 @@ class MaterialExitsCompanion extends UpdateCompanion<MaterialExit> {
     Expression<String>? responsible,
     Expression<String>? observations,
     Expression<DateTime>? createdAt,
+    Expression<String>? createdBy,
     Expression<int>? syncStatus,
     Expression<int>? rowid,
   }) {
@@ -2847,6 +2987,7 @@ class MaterialExitsCompanion extends UpdateCompanion<MaterialExit> {
       if (responsible != null) 'responsible': responsible,
       if (observations != null) 'observations': observations,
       if (createdAt != null) 'created_at': createdAt,
+      if (createdBy != null) 'created_by': createdBy,
       if (syncStatus != null) 'sync_status': syncStatus,
       if (rowid != null) 'rowid': rowid,
     });
@@ -2863,6 +3004,7 @@ class MaterialExitsCompanion extends UpdateCompanion<MaterialExit> {
     Value<String?>? responsible,
     Value<String?>? observations,
     Value<DateTime>? createdAt,
+    Value<String?>? createdBy,
     Value<SyncStatus>? syncStatus,
     Value<int>? rowid,
   }) {
@@ -2877,6 +3019,7 @@ class MaterialExitsCompanion extends UpdateCompanion<MaterialExit> {
       responsible: responsible ?? this.responsible,
       observations: observations ?? this.observations,
       createdAt: createdAt ?? this.createdAt,
+      createdBy: createdBy ?? this.createdBy,
       syncStatus: syncStatus ?? this.syncStatus,
       rowid: rowid ?? this.rowid,
     );
@@ -2915,6 +3058,9 @@ class MaterialExitsCompanion extends UpdateCompanion<MaterialExit> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
+    if (createdBy.present) {
+      map['created_by'] = Variable<String>(createdBy.value);
+    }
     if (syncStatus.present) {
       map['sync_status'] = Variable<int>(
         $MaterialExitsTable.$convertersyncStatus.toSql(syncStatus.value),
@@ -2939,6 +3085,7 @@ class MaterialExitsCompanion extends UpdateCompanion<MaterialExit> {
           ..write('responsible: $responsible, ')
           ..write('observations: $observations, ')
           ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
           ..write('syncStatus: $syncStatus, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -3013,6 +3160,17 @@ class $MachineryTable extends Machinery
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<String> createdBy = GeneratedColumn<String>(
+    'created_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   late final GeneratedColumnWithTypeConverter<SyncStatus, int> syncStatus =
       GeneratedColumn<int>(
@@ -3030,6 +3188,7 @@ class $MachineryTable extends Machinery
     type,
     description,
     createdAt,
+    createdBy,
     syncStatus,
   ];
   @override
@@ -3086,6 +3245,12 @@ class $MachineryTable extends Machinery
         createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
       );
     }
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    }
     return context;
   }
 
@@ -3119,6 +3284,10 @@ class $MachineryTable extends Machinery
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_by'],
+      ),
       syncStatus: $MachineryTable.$convertersyncStatus.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.int,
@@ -3144,6 +3313,7 @@ class Machine extends DataClass implements Insertable<Machine> {
   final String? type;
   final String? description;
   final DateTime createdAt;
+  final String? createdBy;
   final SyncStatus syncStatus;
   const Machine({
     required this.id,
@@ -3152,6 +3322,7 @@ class Machine extends DataClass implements Insertable<Machine> {
     this.type,
     this.description,
     required this.createdAt,
+    this.createdBy,
     required this.syncStatus,
   });
   @override
@@ -3167,6 +3338,9 @@ class Machine extends DataClass implements Insertable<Machine> {
       map['description'] = Variable<String>(description);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<String>(createdBy);
+    }
     {
       map['sync_status'] = Variable<int>(
         $MachineryTable.$convertersyncStatus.toSql(syncStatus),
@@ -3185,6 +3359,9 @@ class Machine extends DataClass implements Insertable<Machine> {
           ? const Value.absent()
           : Value(description),
       createdAt: Value(createdAt),
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
       syncStatus: Value(syncStatus),
     );
   }
@@ -3201,6 +3378,7 @@ class Machine extends DataClass implements Insertable<Machine> {
       type: serializer.fromJson<String?>(json['type']),
       description: serializer.fromJson<String?>(json['description']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      createdBy: serializer.fromJson<String?>(json['createdBy']),
       syncStatus: $MachineryTable.$convertersyncStatus.fromJson(
         serializer.fromJson<int>(json['syncStatus']),
       ),
@@ -3216,6 +3394,7 @@ class Machine extends DataClass implements Insertable<Machine> {
       'type': serializer.toJson<String?>(type),
       'description': serializer.toJson<String?>(description),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'createdBy': serializer.toJson<String?>(createdBy),
       'syncStatus': serializer.toJson<int>(
         $MachineryTable.$convertersyncStatus.toJson(syncStatus),
       ),
@@ -3229,6 +3408,7 @@ class Machine extends DataClass implements Insertable<Machine> {
     Value<String?> type = const Value.absent(),
     Value<String?> description = const Value.absent(),
     DateTime? createdAt,
+    Value<String?> createdBy = const Value.absent(),
     SyncStatus? syncStatus,
   }) => Machine(
     id: id ?? this.id,
@@ -3237,6 +3417,7 @@ class Machine extends DataClass implements Insertable<Machine> {
     type: type.present ? type.value : this.type,
     description: description.present ? description.value : this.description,
     createdAt: createdAt ?? this.createdAt,
+    createdBy: createdBy.present ? createdBy.value : this.createdBy,
     syncStatus: syncStatus ?? this.syncStatus,
   );
   Machine copyWithCompanion(MachineryCompanion data) {
@@ -3249,6 +3430,7 @@ class Machine extends DataClass implements Insertable<Machine> {
           ? data.description.value
           : this.description,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
       syncStatus: data.syncStatus.present
           ? data.syncStatus.value
           : this.syncStatus,
@@ -3264,6 +3446,7 @@ class Machine extends DataClass implements Insertable<Machine> {
           ..write('type: $type, ')
           ..write('description: $description, ')
           ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
           ..write('syncStatus: $syncStatus')
           ..write(')'))
         .toString();
@@ -3277,6 +3460,7 @@ class Machine extends DataClass implements Insertable<Machine> {
     type,
     description,
     createdAt,
+    createdBy,
     syncStatus,
   );
   @override
@@ -3289,6 +3473,7 @@ class Machine extends DataClass implements Insertable<Machine> {
           other.type == this.type &&
           other.description == this.description &&
           other.createdAt == this.createdAt &&
+          other.createdBy == this.createdBy &&
           other.syncStatus == this.syncStatus);
 }
 
@@ -3299,6 +3484,7 @@ class MachineryCompanion extends UpdateCompanion<Machine> {
   final Value<String?> type;
   final Value<String?> description;
   final Value<DateTime> createdAt;
+  final Value<String?> createdBy;
   final Value<SyncStatus> syncStatus;
   final Value<int> rowid;
   const MachineryCompanion({
@@ -3308,6 +3494,7 @@ class MachineryCompanion extends UpdateCompanion<Machine> {
     this.type = const Value.absent(),
     this.description = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
     this.syncStatus = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -3318,6 +3505,7 @@ class MachineryCompanion extends UpdateCompanion<Machine> {
     this.type = const Value.absent(),
     this.description = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
     required SyncStatus syncStatus,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -3331,6 +3519,7 @@ class MachineryCompanion extends UpdateCompanion<Machine> {
     Expression<String>? type,
     Expression<String>? description,
     Expression<DateTime>? createdAt,
+    Expression<String>? createdBy,
     Expression<int>? syncStatus,
     Expression<int>? rowid,
   }) {
@@ -3341,6 +3530,7 @@ class MachineryCompanion extends UpdateCompanion<Machine> {
       if (type != null) 'type': type,
       if (description != null) 'description': description,
       if (createdAt != null) 'created_at': createdAt,
+      if (createdBy != null) 'created_by': createdBy,
       if (syncStatus != null) 'sync_status': syncStatus,
       if (rowid != null) 'rowid': rowid,
     });
@@ -3353,6 +3543,7 @@ class MachineryCompanion extends UpdateCompanion<Machine> {
     Value<String?>? type,
     Value<String?>? description,
     Value<DateTime>? createdAt,
+    Value<String?>? createdBy,
     Value<SyncStatus>? syncStatus,
     Value<int>? rowid,
   }) {
@@ -3363,6 +3554,7 @@ class MachineryCompanion extends UpdateCompanion<Machine> {
       type: type ?? this.type,
       description: description ?? this.description,
       createdAt: createdAt ?? this.createdAt,
+      createdBy: createdBy ?? this.createdBy,
       syncStatus: syncStatus ?? this.syncStatus,
       rowid: rowid ?? this.rowid,
     );
@@ -3389,6 +3581,9 @@ class MachineryCompanion extends UpdateCompanion<Machine> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
+    if (createdBy.present) {
+      map['created_by'] = Variable<String>(createdBy.value);
+    }
     if (syncStatus.present) {
       map['sync_status'] = Variable<int>(
         $MachineryTable.$convertersyncStatus.toSql(syncStatus.value),
@@ -3409,6 +3604,7 @@ class MachineryCompanion extends UpdateCompanion<Machine> {
           ..write('type: $type, ')
           ..write('description: $description, ')
           ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
           ..write('syncStatus: $syncStatus, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -3453,6 +3649,17 @@ class $DailyRecordPhotosTable extends DailyRecordPhotos
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _storagePathMeta = const VerificationMeta(
+    'storagePath',
+  );
+  @override
+  late final GeneratedColumn<String> storagePath = GeneratedColumn<String>(
+    'storage_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -3464,6 +3671,17 @@ class $DailyRecordPhotosTable extends DailyRecordPhotos
     type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<String> createdBy = GeneratedColumn<String>(
+    'created_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
   );
   @override
   late final GeneratedColumnWithTypeConverter<SyncStatus, int> syncStatus =
@@ -3479,7 +3697,9 @@ class $DailyRecordPhotosTable extends DailyRecordPhotos
     id,
     dailyRecordId,
     localPath,
+    storagePath,
     createdAt,
+    createdBy,
     syncStatus,
   ];
   @override
@@ -3518,10 +3738,25 @@ class $DailyRecordPhotosTable extends DailyRecordPhotos
     } else if (isInserting) {
       context.missing(_localPathMeta);
     }
+    if (data.containsKey('storage_path')) {
+      context.handle(
+        _storagePathMeta,
+        storagePath.isAcceptableOrUnknown(
+          data['storage_path']!,
+          _storagePathMeta,
+        ),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
         createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
       );
     }
     return context;
@@ -3545,10 +3780,18 @@ class $DailyRecordPhotosTable extends DailyRecordPhotos
         DriftSqlType.string,
         data['${effectivePrefix}local_path'],
       )!,
+      storagePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}storage_path'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_by'],
+      ),
       syncStatus: $DailyRecordPhotosTable.$convertersyncStatus.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.int,
@@ -3572,13 +3815,17 @@ class DailyRecordPhoto extends DataClass
   final String id;
   final String dailyRecordId;
   final String localPath;
+  final String? storagePath;
   final DateTime createdAt;
+  final String? createdBy;
   final SyncStatus syncStatus;
   const DailyRecordPhoto({
     required this.id,
     required this.dailyRecordId,
     required this.localPath,
+    this.storagePath,
     required this.createdAt,
+    this.createdBy,
     required this.syncStatus,
   });
   @override
@@ -3587,7 +3834,13 @@ class DailyRecordPhoto extends DataClass
     map['id'] = Variable<String>(id);
     map['daily_record_id'] = Variable<String>(dailyRecordId);
     map['local_path'] = Variable<String>(localPath);
+    if (!nullToAbsent || storagePath != null) {
+      map['storage_path'] = Variable<String>(storagePath);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<String>(createdBy);
+    }
     {
       map['sync_status'] = Variable<int>(
         $DailyRecordPhotosTable.$convertersyncStatus.toSql(syncStatus),
@@ -3601,7 +3854,13 @@ class DailyRecordPhoto extends DataClass
       id: Value(id),
       dailyRecordId: Value(dailyRecordId),
       localPath: Value(localPath),
+      storagePath: storagePath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(storagePath),
       createdAt: Value(createdAt),
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
       syncStatus: Value(syncStatus),
     );
   }
@@ -3615,7 +3874,9 @@ class DailyRecordPhoto extends DataClass
       id: serializer.fromJson<String>(json['id']),
       dailyRecordId: serializer.fromJson<String>(json['dailyRecordId']),
       localPath: serializer.fromJson<String>(json['localPath']),
+      storagePath: serializer.fromJson<String?>(json['storagePath']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      createdBy: serializer.fromJson<String?>(json['createdBy']),
       syncStatus: $DailyRecordPhotosTable.$convertersyncStatus.fromJson(
         serializer.fromJson<int>(json['syncStatus']),
       ),
@@ -3628,7 +3889,9 @@ class DailyRecordPhoto extends DataClass
       'id': serializer.toJson<String>(id),
       'dailyRecordId': serializer.toJson<String>(dailyRecordId),
       'localPath': serializer.toJson<String>(localPath),
+      'storagePath': serializer.toJson<String?>(storagePath),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'createdBy': serializer.toJson<String?>(createdBy),
       'syncStatus': serializer.toJson<int>(
         $DailyRecordPhotosTable.$convertersyncStatus.toJson(syncStatus),
       ),
@@ -3639,13 +3902,17 @@ class DailyRecordPhoto extends DataClass
     String? id,
     String? dailyRecordId,
     String? localPath,
+    Value<String?> storagePath = const Value.absent(),
     DateTime? createdAt,
+    Value<String?> createdBy = const Value.absent(),
     SyncStatus? syncStatus,
   }) => DailyRecordPhoto(
     id: id ?? this.id,
     dailyRecordId: dailyRecordId ?? this.dailyRecordId,
     localPath: localPath ?? this.localPath,
+    storagePath: storagePath.present ? storagePath.value : this.storagePath,
     createdAt: createdAt ?? this.createdAt,
+    createdBy: createdBy.present ? createdBy.value : this.createdBy,
     syncStatus: syncStatus ?? this.syncStatus,
   );
   DailyRecordPhoto copyWithCompanion(DailyRecordPhotosCompanion data) {
@@ -3655,7 +3922,11 @@ class DailyRecordPhoto extends DataClass
           ? data.dailyRecordId.value
           : this.dailyRecordId,
       localPath: data.localPath.present ? data.localPath.value : this.localPath,
+      storagePath: data.storagePath.present
+          ? data.storagePath.value
+          : this.storagePath,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
       syncStatus: data.syncStatus.present
           ? data.syncStatus.value
           : this.syncStatus,
@@ -3668,15 +3939,24 @@ class DailyRecordPhoto extends DataClass
           ..write('id: $id, ')
           ..write('dailyRecordId: $dailyRecordId, ')
           ..write('localPath: $localPath, ')
+          ..write('storagePath: $storagePath, ')
           ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
           ..write('syncStatus: $syncStatus')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, dailyRecordId, localPath, createdAt, syncStatus);
+  int get hashCode => Object.hash(
+    id,
+    dailyRecordId,
+    localPath,
+    storagePath,
+    createdAt,
+    createdBy,
+    syncStatus,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3684,7 +3964,9 @@ class DailyRecordPhoto extends DataClass
           other.id == this.id &&
           other.dailyRecordId == this.dailyRecordId &&
           other.localPath == this.localPath &&
+          other.storagePath == this.storagePath &&
           other.createdAt == this.createdAt &&
+          other.createdBy == this.createdBy &&
           other.syncStatus == this.syncStatus);
 }
 
@@ -3692,14 +3974,18 @@ class DailyRecordPhotosCompanion extends UpdateCompanion<DailyRecordPhoto> {
   final Value<String> id;
   final Value<String> dailyRecordId;
   final Value<String> localPath;
+  final Value<String?> storagePath;
   final Value<DateTime> createdAt;
+  final Value<String?> createdBy;
   final Value<SyncStatus> syncStatus;
   final Value<int> rowid;
   const DailyRecordPhotosCompanion({
     this.id = const Value.absent(),
     this.dailyRecordId = const Value.absent(),
     this.localPath = const Value.absent(),
+    this.storagePath = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
     this.syncStatus = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -3707,7 +3993,9 @@ class DailyRecordPhotosCompanion extends UpdateCompanion<DailyRecordPhoto> {
     required String id,
     required String dailyRecordId,
     required String localPath,
+    this.storagePath = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
     required SyncStatus syncStatus,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -3718,7 +4006,9 @@ class DailyRecordPhotosCompanion extends UpdateCompanion<DailyRecordPhoto> {
     Expression<String>? id,
     Expression<String>? dailyRecordId,
     Expression<String>? localPath,
+    Expression<String>? storagePath,
     Expression<DateTime>? createdAt,
+    Expression<String>? createdBy,
     Expression<int>? syncStatus,
     Expression<int>? rowid,
   }) {
@@ -3726,7 +4016,9 @@ class DailyRecordPhotosCompanion extends UpdateCompanion<DailyRecordPhoto> {
       if (id != null) 'id': id,
       if (dailyRecordId != null) 'daily_record_id': dailyRecordId,
       if (localPath != null) 'local_path': localPath,
+      if (storagePath != null) 'storage_path': storagePath,
       if (createdAt != null) 'created_at': createdAt,
+      if (createdBy != null) 'created_by': createdBy,
       if (syncStatus != null) 'sync_status': syncStatus,
       if (rowid != null) 'rowid': rowid,
     });
@@ -3736,7 +4028,9 @@ class DailyRecordPhotosCompanion extends UpdateCompanion<DailyRecordPhoto> {
     Value<String>? id,
     Value<String>? dailyRecordId,
     Value<String>? localPath,
+    Value<String?>? storagePath,
     Value<DateTime>? createdAt,
+    Value<String?>? createdBy,
     Value<SyncStatus>? syncStatus,
     Value<int>? rowid,
   }) {
@@ -3744,7 +4038,9 @@ class DailyRecordPhotosCompanion extends UpdateCompanion<DailyRecordPhoto> {
       id: id ?? this.id,
       dailyRecordId: dailyRecordId ?? this.dailyRecordId,
       localPath: localPath ?? this.localPath,
+      storagePath: storagePath ?? this.storagePath,
       createdAt: createdAt ?? this.createdAt,
+      createdBy: createdBy ?? this.createdBy,
       syncStatus: syncStatus ?? this.syncStatus,
       rowid: rowid ?? this.rowid,
     );
@@ -3762,8 +4058,14 @@ class DailyRecordPhotosCompanion extends UpdateCompanion<DailyRecordPhoto> {
     if (localPath.present) {
       map['local_path'] = Variable<String>(localPath.value);
     }
+    if (storagePath.present) {
+      map['storage_path'] = Variable<String>(storagePath.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (createdBy.present) {
+      map['created_by'] = Variable<String>(createdBy.value);
     }
     if (syncStatus.present) {
       map['sync_status'] = Variable<int>(
@@ -3782,7 +4084,9 @@ class DailyRecordPhotosCompanion extends UpdateCompanion<DailyRecordPhoto> {
           ..write('id: $id, ')
           ..write('dailyRecordId: $dailyRecordId, ')
           ..write('localPath: $localPath, ')
+          ..write('storagePath: $storagePath, ')
           ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
           ..write('syncStatus: $syncStatus, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -4377,6 +4681,7 @@ typedef $$DailyRecordsTableCreateCompanionBuilder =
       Value<String?> observations,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
+      Value<String?> createdBy,
       required SyncStatus syncStatus,
       Value<int> rowid,
     });
@@ -4389,6 +4694,7 @@ typedef $$DailyRecordsTableUpdateCompanionBuilder =
       Value<String?> observations,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
+      Value<String?> createdBy,
       Value<SyncStatus> syncStatus,
       Value<int> rowid,
     });
@@ -4434,6 +4740,11 @@ class $$DailyRecordsTableFilterComposer
 
   ColumnFilters<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdBy => $composableBuilder(
+    column: $table.createdBy,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4488,6 +4799,11 @@ class $$DailyRecordsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get syncStatus => $composableBuilder(
     column: $table.syncStatus,
     builder: (column) => ColumnOrderings(column),
@@ -4527,6 +4843,9 @@ class $$DailyRecordsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<SyncStatus, int> get syncStatus =>
       $composableBuilder(
@@ -4573,6 +4892,7 @@ class $$DailyRecordsTableTableManager
                 Value<String?> observations = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
+                Value<String?> createdBy = const Value.absent(),
                 Value<SyncStatus> syncStatus = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DailyRecordsCompanion(
@@ -4583,6 +4903,7 @@ class $$DailyRecordsTableTableManager
                 observations: observations,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                createdBy: createdBy,
                 syncStatus: syncStatus,
                 rowid: rowid,
               ),
@@ -4595,6 +4916,7 @@ class $$DailyRecordsTableTableManager
                 Value<String?> observations = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
+                Value<String?> createdBy = const Value.absent(),
                 required SyncStatus syncStatus,
                 Value<int> rowid = const Value.absent(),
               }) => DailyRecordsCompanion.insert(
@@ -4605,6 +4927,7 @@ class $$DailyRecordsTableTableManager
                 observations: observations,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                createdBy: createdBy,
                 syncStatus: syncStatus,
                 rowid: rowid,
               ),
@@ -4644,6 +4967,7 @@ typedef $$MaterialEntriesTableCreateCompanionBuilder =
       Value<String?> supplier,
       Value<String?> observations,
       Value<DateTime> createdAt,
+      Value<String?> createdBy,
       required SyncStatus syncStatus,
       Value<int> rowid,
     });
@@ -4658,6 +4982,7 @@ typedef $$MaterialEntriesTableUpdateCompanionBuilder =
       Value<String?> supplier,
       Value<String?> observations,
       Value<DateTime> createdAt,
+      Value<String?> createdBy,
       Value<SyncStatus> syncStatus,
       Value<int> rowid,
     });
@@ -4713,6 +5038,11 @@ class $$MaterialEntriesTableFilterComposer
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdBy => $composableBuilder(
+    column: $table.createdBy,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4777,6 +5107,11 @@ class $$MaterialEntriesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get syncStatus => $composableBuilder(
     column: $table.syncStatus,
     builder: (column) => ColumnOrderings(column),
@@ -4822,6 +5157,9 @@ class $$MaterialEntriesTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<SyncStatus, int> get syncStatus =>
       $composableBuilder(
@@ -4872,6 +5210,7 @@ class $$MaterialEntriesTableTableManager
                 Value<String?> supplier = const Value.absent(),
                 Value<String?> observations = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> createdBy = const Value.absent(),
                 Value<SyncStatus> syncStatus = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MaterialEntriesCompanion(
@@ -4884,6 +5223,7 @@ class $$MaterialEntriesTableTableManager
                 supplier: supplier,
                 observations: observations,
                 createdAt: createdAt,
+                createdBy: createdBy,
                 syncStatus: syncStatus,
                 rowid: rowid,
               ),
@@ -4898,6 +5238,7 @@ class $$MaterialEntriesTableTableManager
                 Value<String?> supplier = const Value.absent(),
                 Value<String?> observations = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> createdBy = const Value.absent(),
                 required SyncStatus syncStatus,
                 Value<int> rowid = const Value.absent(),
               }) => MaterialEntriesCompanion.insert(
@@ -4910,6 +5251,7 @@ class $$MaterialEntriesTableTableManager
                 supplier: supplier,
                 observations: observations,
                 createdAt: createdAt,
+                createdBy: createdBy,
                 syncStatus: syncStatus,
                 rowid: rowid,
               ),
@@ -4950,6 +5292,7 @@ typedef $$MaterialExitsTableCreateCompanionBuilder =
       Value<String?> responsible,
       Value<String?> observations,
       Value<DateTime> createdAt,
+      Value<String?> createdBy,
       required SyncStatus syncStatus,
       Value<int> rowid,
     });
@@ -4965,6 +5308,7 @@ typedef $$MaterialExitsTableUpdateCompanionBuilder =
       Value<String?> responsible,
       Value<String?> observations,
       Value<DateTime> createdAt,
+      Value<String?> createdBy,
       Value<SyncStatus> syncStatus,
       Value<int> rowid,
     });
@@ -5025,6 +5369,11 @@ class $$MaterialExitsTableFilterComposer
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdBy => $composableBuilder(
+    column: $table.createdBy,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -5094,6 +5443,11 @@ class $$MaterialExitsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get syncStatus => $composableBuilder(
     column: $table.syncStatus,
     builder: (column) => ColumnOrderings(column),
@@ -5147,6 +5501,9 @@ class $$MaterialExitsTableAnnotationComposer
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
+  GeneratedColumn<String> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
+
   GeneratedColumnWithTypeConverter<SyncStatus, int> get syncStatus =>
       $composableBuilder(
         column: $table.syncStatus,
@@ -5195,6 +5552,7 @@ class $$MaterialExitsTableTableManager
                 Value<String?> responsible = const Value.absent(),
                 Value<String?> observations = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> createdBy = const Value.absent(),
                 Value<SyncStatus> syncStatus = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MaterialExitsCompanion(
@@ -5208,6 +5566,7 @@ class $$MaterialExitsTableTableManager
                 responsible: responsible,
                 observations: observations,
                 createdAt: createdAt,
+                createdBy: createdBy,
                 syncStatus: syncStatus,
                 rowid: rowid,
               ),
@@ -5223,6 +5582,7 @@ class $$MaterialExitsTableTableManager
                 Value<String?> responsible = const Value.absent(),
                 Value<String?> observations = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> createdBy = const Value.absent(),
                 required SyncStatus syncStatus,
                 Value<int> rowid = const Value.absent(),
               }) => MaterialExitsCompanion.insert(
@@ -5236,6 +5596,7 @@ class $$MaterialExitsTableTableManager
                 responsible: responsible,
                 observations: observations,
                 createdAt: createdAt,
+                createdBy: createdBy,
                 syncStatus: syncStatus,
                 rowid: rowid,
               ),
@@ -5272,6 +5633,7 @@ typedef $$MachineryTableCreateCompanionBuilder =
       Value<String?> type,
       Value<String?> description,
       Value<DateTime> createdAt,
+      Value<String?> createdBy,
       required SyncStatus syncStatus,
       Value<int> rowid,
     });
@@ -5283,6 +5645,7 @@ typedef $$MachineryTableUpdateCompanionBuilder =
       Value<String?> type,
       Value<String?> description,
       Value<DateTime> createdAt,
+      Value<String?> createdBy,
       Value<SyncStatus> syncStatus,
       Value<int> rowid,
     });
@@ -5323,6 +5686,11 @@ class $$MachineryTableFilterComposer
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdBy => $composableBuilder(
+    column: $table.createdBy,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -5372,6 +5740,11 @@ class $$MachineryTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get syncStatus => $composableBuilder(
     column: $table.syncStatus,
     builder: (column) => ColumnOrderings(column),
@@ -5406,6 +5779,9 @@ class $$MachineryTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<SyncStatus, int> get syncStatus =>
       $composableBuilder(
@@ -5448,6 +5824,7 @@ class $$MachineryTableTableManager
                 Value<String?> type = const Value.absent(),
                 Value<String?> description = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> createdBy = const Value.absent(),
                 Value<SyncStatus> syncStatus = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MachineryCompanion(
@@ -5457,6 +5834,7 @@ class $$MachineryTableTableManager
                 type: type,
                 description: description,
                 createdAt: createdAt,
+                createdBy: createdBy,
                 syncStatus: syncStatus,
                 rowid: rowid,
               ),
@@ -5468,6 +5846,7 @@ class $$MachineryTableTableManager
                 Value<String?> type = const Value.absent(),
                 Value<String?> description = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> createdBy = const Value.absent(),
                 required SyncStatus syncStatus,
                 Value<int> rowid = const Value.absent(),
               }) => MachineryCompanion.insert(
@@ -5477,6 +5856,7 @@ class $$MachineryTableTableManager
                 type: type,
                 description: description,
                 createdAt: createdAt,
+                createdBy: createdBy,
                 syncStatus: syncStatus,
                 rowid: rowid,
               ),
@@ -5507,7 +5887,9 @@ typedef $$DailyRecordPhotosTableCreateCompanionBuilder =
       required String id,
       required String dailyRecordId,
       required String localPath,
+      Value<String?> storagePath,
       Value<DateTime> createdAt,
+      Value<String?> createdBy,
       required SyncStatus syncStatus,
       Value<int> rowid,
     });
@@ -5516,7 +5898,9 @@ typedef $$DailyRecordPhotosTableUpdateCompanionBuilder =
       Value<String> id,
       Value<String> dailyRecordId,
       Value<String> localPath,
+      Value<String?> storagePath,
       Value<DateTime> createdAt,
+      Value<String?> createdBy,
       Value<SyncStatus> syncStatus,
       Value<int> rowid,
     });
@@ -5545,8 +5929,18 @@ class $$DailyRecordPhotosTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get storagePath => $composableBuilder(
+    column: $table.storagePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdBy => $composableBuilder(
+    column: $table.createdBy,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -5581,8 +5975,18 @@ class $$DailyRecordPhotosTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get storagePath => $composableBuilder(
+    column: $table.storagePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdBy => $composableBuilder(
+    column: $table.createdBy,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -5612,8 +6016,16 @@ class $$DailyRecordPhotosTableAnnotationComposer
   GeneratedColumn<String> get localPath =>
       $composableBuilder(column: $table.localPath, builder: (column) => column);
 
+  GeneratedColumn<String> get storagePath => $composableBuilder(
+    column: $table.storagePath,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<SyncStatus, int> get syncStatus =>
       $composableBuilder(
@@ -5665,14 +6077,18 @@ class $$DailyRecordPhotosTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<String> dailyRecordId = const Value.absent(),
                 Value<String> localPath = const Value.absent(),
+                Value<String?> storagePath = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> createdBy = const Value.absent(),
                 Value<SyncStatus> syncStatus = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DailyRecordPhotosCompanion(
                 id: id,
                 dailyRecordId: dailyRecordId,
                 localPath: localPath,
+                storagePath: storagePath,
                 createdAt: createdAt,
+                createdBy: createdBy,
                 syncStatus: syncStatus,
                 rowid: rowid,
               ),
@@ -5681,14 +6097,18 @@ class $$DailyRecordPhotosTableTableManager
                 required String id,
                 required String dailyRecordId,
                 required String localPath,
+                Value<String?> storagePath = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> createdBy = const Value.absent(),
                 required SyncStatus syncStatus,
                 Value<int> rowid = const Value.absent(),
               }) => DailyRecordPhotosCompanion.insert(
                 id: id,
                 dailyRecordId: dailyRecordId,
                 localPath: localPath,
+                storagePath: storagePath,
                 createdAt: createdAt,
+                createdBy: createdBy,
                 syncStatus: syncStatus,
                 rowid: rowid,
               ),

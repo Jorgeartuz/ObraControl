@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,7 +10,10 @@ import 'package:obrafcontrol_test/features/daily_records/data/daily_record_repos
 
 class CreateDailyRecordPage extends ConsumerStatefulWidget {
   final String projectId;
-  const CreateDailyRecordPage({super.key, required this.projectId});
+  final DailyRecord? record;
+  const CreateDailyRecordPage({super.key, required this.projectId, this.record});
+
+  bool get isEditing => record != null;
 
   @override
   ConsumerState<CreateDailyRecordPage> createState() => _CreateDailyRecordPageState();
@@ -17,8 +21,8 @@ class CreateDailyRecordPage extends ConsumerStatefulWidget {
 
 class _CreateDailyRecordPageState extends ConsumerState<CreateDailyRecordPage> {
   final _formKey = GlobalKey<FormState>();
-  final _descController = TextEditingController();
-  final _obsController = TextEditingController();
+  late final _descController = TextEditingController(text: widget.record?.description);
+  late final _obsController = TextEditingController(text: widget.record?.observations);
   final List<String> _tempPhotos = [];
   final ImagePicker _picker = ImagePicker();
   bool _isSaving = false;
@@ -48,39 +52,54 @@ try {
     setState(() => _isSaving = true);
 
     try {
-      final recordId = const Uuid().v4();
-      final record = DailyRecord(
-        id: recordId,
-        projectId: widget.projectId,
-        date: DateTime.now(),
-        description: _descController.text,
-        observations: _obsController.text,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        syncStatus: SyncStatus.pending,
-      );
-
-      await ref.read(dailyRecordRepositoryProvider).saveCompleteRecord(
-        record: record,
-        tempPhotoPaths: _tempPhotos,
-      );
+      final repository = ref.read(dailyRecordRepositoryProvider);
+      if (widget.isEditing) {
+        final existing = widget.record!;
+        final updated = existing.copyWith(
+          description: _descController.text,
+          observations: Value(_obsController.text),
+          updatedAt: DateTime.now(),
+        );
+        await repository.updateRecord(updated);
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Registro actualizado correctamente")),
+        );
+      } else {
+        final record = DailyRecord(
+          id: const Uuid().v4(),
+          projectId: widget.projectId,
+          date: DateTime.now(),
+          description: _descController.text,
+          observations: _obsController.text,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          syncStatus: SyncStatus.pending,
+        );
+        await repository.saveCompleteRecord(
+          record: record,
+          tempPhotoPaths: _tempPhotos,
+        );
+      }
       if (mounted) {
-  Navigator.pop(context);
-}
+        Navigator.pop(context);
+      }
     } catch (e) {
-      if (!mounted) return; // <-- AGREGA ESTA PROTECCIÓN
-  ScaffoldMessenger.of(context).showSnackBar(
-     SnackBar(content: Text("Error: $e")),
-     );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
     } finally {
-      setState(() => _isSaving = false);
+      if (mounted) setState(() => _isSaving = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Nuevo Registro")),
+      appBar: AppBar(
+        title: Text(widget.isEditing ? "Editar Registro" : "Nuevo Registro"),
+      ),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -97,41 +116,43 @@ try {
               decoration: const InputDecoration(labelText: "Observaciones", border: OutlineInputBorder()),
               maxLines: 2,
             ),
-            const SizedBox(height: 20),
-            const Text("Fotografías", style: TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, crossAxisSpacing: 8, mainAxisSpacing: 8),
-              itemCount: _tempPhotos.length + 1,
-              itemBuilder: (context, index) {
-                if (index == _tempPhotos.length) {
-                  return InkWell(
-                    onTap: _takePhoto,
-                    child: Container(
-                      decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(8)),
-                      child: const Icon(Icons.add_a_photo, size: 40, color: Colors.grey),
-                    ),
-                  );
-                }
-                return Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.file(File(_tempPhotos[index]), fit: BoxFit.cover, width: double.infinity, height: double.infinity),
-                    ),
-                    Positioned(
-                      top: 0, right: 0,
-                      child: IconButton(
-                        icon: const CircleAvatar(backgroundColor: Colors.red, radius: 12, child: Icon(Icons.close, size: 16, color: Colors.white)),
-                        onPressed: () => setState(() => _tempPhotos.removeAt(index)),
+            if (!widget.isEditing) ...[
+              const SizedBox(height: 20),
+              const Text("Fotografías", style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, crossAxisSpacing: 8, mainAxisSpacing: 8),
+                itemCount: _tempPhotos.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == _tempPhotos.length) {
+                    return InkWell(
+                      onTap: _takePhoto,
+                      child: Container(
+                        decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(8)),
+                        child: const Icon(Icons.add_a_photo, size: 40, color: Colors.grey),
                       ),
-                    ),
-                  ],
-                );
-              },
-            ),
+                    );
+                  }
+                  return Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.file(File(_tempPhotos[index]), fit: BoxFit.cover, width: double.infinity, height: double.infinity),
+                      ),
+                      Positioned(
+                        top: 0, right: 0,
+                        child: IconButton(
+                          icon: const CircleAvatar(backgroundColor: Colors.red, radius: 12, child: Icon(Icons.close, size: 16, color: Colors.white)),
+                          onPressed: () => setState(() => _tempPhotos.removeAt(index)),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ],
           ],
         ),
       ),
@@ -140,7 +161,9 @@ try {
         child: ElevatedButton(
           onPressed: _save,
           style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(16)),
-          child: _isSaving ? const CircularProgressIndicator() : const Text("GUARDAR REGISTRO"),
+          child: _isSaving
+              ? const CircularProgressIndicator()
+              : Text(widget.isEditing ? "GUARDAR CAMBIOS" : "GUARDAR REGISTRO"),
         ),
       ),
     );

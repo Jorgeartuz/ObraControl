@@ -27,13 +27,29 @@ class MachineryListPage extends ConsumerWidget {
                     leading: const Icon(Icons.engineering, color: Colors.orange),
                     title: Text(machine.name),
                     subtitle: Text(machine.type ?? "Maquinaria de obra"),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-                      // Aquí se abrirá el detalle de la maquinaria en el futuro
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Abriendo: ${machine.name}"))
-                      );
-                    },
+                    trailing: PopupMenuButton<String>(
+                      icon: const Icon(Icons.more_vert),
+                      onSelected: (value) {
+                        if (value == 'edit') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => AddMachineryPage(
+                                projectId: project.id,
+                                machine: machine,
+                              ),
+                            ),
+                          );
+                        }
+                        if (value == 'delete') {
+                          _deleteMachine(context, ref, machine);
+                        }
+                      },
+                      itemBuilder: (context) => const [
+                        PopupMenuItem(value: 'edit', child: Text('Editar')),
+                        PopupMenuItem(value: 'delete', child: Text('Eliminar')),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -47,5 +63,43 @@ class MachineryListPage extends ConsumerWidget {
         child: const Icon(Icons.add),
       ),
     );
+  }
+
+  Future<void> _deleteMachine(
+    BuildContext context,
+    WidgetRef ref,
+    Machine machine,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Eliminar maquinaria'),
+        content: Text('¿Seguro que deseas eliminar "${machine.name}"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+
+    try {
+      await ref.read(machineryRepositoryProvider).deleteMachine(machine.id);
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Maquinaria eliminada correctamente.')),
+      );
+    } catch (error) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No se pudo eliminar la maquinaria: $error')),
+      );
+    }
   }
 }

@@ -7,6 +7,7 @@ import 'package:obrafcontrol_test/app/app.dart';
 import 'package:obrafcontrol_test/core/database/local_database.dart';
 import 'package:obrafcontrol_test/core/sync/sync_engine.dart';
 import 'package:obrafcontrol_test/core/sync/project_sync_coordinator.dart';
+import 'package:obrafcontrol_test/core/sync/operational_pull_service.dart';
 import 'package:obrafcontrol_test/core/network/connectivity_service.dart';
 import 'package:obrafcontrol_test/features/projects/data/project_repository.dart';
 
@@ -26,9 +27,16 @@ final Provider<ProjectSyncCoordinator> projectSyncCoordinatorProvider =
     Provider<ProjectSyncCoordinator>(
       (ref) => ProjectSyncCoordinator(
         ref.watch(syncEngineProvider),
-        () => ref.read(projectRepositoryProvider).pullProjects(),
+        () async {
+          await ref.read(projectRepositoryProvider).pullProjects();
+          await ref.read(operationalPullServiceProvider).pullAll();
+        },
       ),
     );
+
+final operationalPullServiceProvider = Provider<OperationalPullService>(
+  (ref) => OperationalPullService(ref.watch(databaseProvider)),
+);
 
 final authStateChangesProvider = StreamProvider<AuthState>(
   (ref) => Supabase.instance.client.auth.onAuthStateChange,

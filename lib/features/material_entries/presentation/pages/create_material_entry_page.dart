@@ -7,7 +7,10 @@ import 'package:obrafcontrol_test/features/material_entries/data/material_entry_
 
 class CreateMaterialEntryPage extends ConsumerStatefulWidget {
   final String projectId;
-  const CreateMaterialEntryPage({super.key, required this.projectId});
+  final MaterialEntry? entry;
+  const CreateMaterialEntryPage({super.key, required this.projectId, this.entry});
+
+  bool get isEditing => entry != null;
 
   @override
   ConsumerState<CreateMaterialEntryPage> createState() => _CreateMaterialEntryPageState();
@@ -15,38 +18,60 @@ class CreateMaterialEntryPage extends ConsumerStatefulWidget {
 
 class _CreateMaterialEntryPageState extends ConsumerState<CreateMaterialEntryPage> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _qtyController = TextEditingController();
-  final _supplierController = TextEditingController();
-  final _obsController = TextEditingController();
-  
-  String _selectedUnit = 'bultos';
+  late final _nameController = TextEditingController(text: widget.entry?.materialName);
+  late final _qtyController = TextEditingController(text: widget.entry?.quantity.toString());
+  late final _supplierController = TextEditingController(text: widget.entry?.supplier);
+  late final _obsController = TextEditingController(text: widget.entry?.observations);
+
+  late String _selectedUnit = widget.entry?.unit ?? 'bultos';
   final List<String> _units = ['kg', 'toneladas', 'bultos', 'unidades', 'm', 'm²', 'm³', 'litros', 'Otra'];
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final entry = MaterialEntry(
-      id: const Uuid().v4(),
-      projectId: widget.projectId,
-      date: DateTime.now(),
-      materialName: _nameController.text,
-      quantity: double.parse(_qtyController.text),
-      unit: _selectedUnit,
-      supplier: _supplierController.text.isEmpty ? null : _supplierController.text,
-      observations: _obsController.text.isEmpty ? null : _obsController.text,
-      createdAt: DateTime.now(),
-      syncStatus: SyncStatus.pending,
-    );
-
-    await ref.read(materialEntryRepositoryProvider).addEntry(entry);
+    final repository = ref.read(materialEntryRepositoryProvider);
+    if (widget.isEditing) {
+      final existing = widget.entry!;
+      final updated = MaterialEntry(
+        id: existing.id,
+        projectId: existing.projectId,
+        date: existing.date,
+        materialName: _nameController.text,
+        quantity: double.parse(_qtyController.text),
+        unit: _selectedUnit,
+        supplier: _supplierController.text.isEmpty ? null : _supplierController.text,
+        observations: _obsController.text.isEmpty ? null : _obsController.text,
+        createdAt: existing.createdAt,
+        createdBy: existing.createdBy,
+        syncStatus: SyncStatus.pending,
+      );
+      await repository.updateEntry(updated);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Entrada actualizada correctamente")),
+      );
+    } else {
+      final entry = MaterialEntry(
+        id: const Uuid().v4(),
+        projectId: widget.projectId,
+        date: DateTime.now(),
+        materialName: _nameController.text,
+        quantity: double.parse(_qtyController.text),
+        unit: _selectedUnit,
+        supplier: _supplierController.text.isEmpty ? null : _supplierController.text,
+        observations: _obsController.text.isEmpty ? null : _obsController.text,
+        createdAt: DateTime.now(),
+        syncStatus: SyncStatus.pending,
+      );
+      await repository.addEntry(entry);
+    }
     if (mounted) Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Registrar entrada")),
+      appBar: AppBar(title: Text(widget.isEditing ? "Editar entrada" : "Registrar entrada")),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -102,7 +127,10 @@ class _CreateMaterialEntryPageState extends ConsumerState<CreateMaterialEntryPag
               child: ElevatedButton(
                 onPressed: _save,
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.amber, foregroundColor: Colors.black87),
-                child: const Text("REGISTRAR ENTRADA", style: TextStyle(fontWeight: FontWeight.bold)),
+                child: Text(
+                  widget.isEditing ? "GUARDAR CAMBIOS" : "REGISTRAR ENTRADA",
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
             ),
           ],

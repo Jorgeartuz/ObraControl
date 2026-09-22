@@ -8,7 +8,10 @@ import 'package:obrafcontrol_test/features/material_exits/data/material_exit_rep
 
 class CreateMaterialExitPage extends ConsumerStatefulWidget {
   final String projectId;
-  const CreateMaterialExitPage({super.key, required this.projectId});
+  final MaterialExit? exit;
+  const CreateMaterialExitPage({super.key, required this.projectId, this.exit});
+
+  bool get isEditing => exit != null;
 
   @override
   ConsumerState<CreateMaterialExitPage> createState() =>
@@ -18,14 +21,14 @@ class CreateMaterialExitPage extends ConsumerStatefulWidget {
 class _CreateMaterialExitPageState
     extends ConsumerState<CreateMaterialExitPage> {
   final _formKey = GlobalKey<FormState>();
-  final _materialController = TextEditingController();
-  final _qtyController = TextEditingController();
-  final _destinationController = TextEditingController();
-  final _responsibleController = TextEditingController();
-  final _obsController = TextEditingController();
+  late final _materialController = TextEditingController(text: widget.exit?.materialName);
+  late final _qtyController = TextEditingController(text: widget.exit?.quantity.toString());
+  late final _destinationController = TextEditingController(text: widget.exit?.destination);
+  late final _responsibleController = TextEditingController(text: widget.exit?.responsible);
+  late final _obsController = TextEditingController(text: widget.exit?.observations);
 
-  DateTime _selectedDate = DateTime.now();
-  String _selectedUnit = 'bultos';
+  late DateTime _selectedDate = widget.exit?.date ?? DateTime.now();
+  late String _selectedUnit = widget.exit?.unit ?? 'bultos';
   final List<String> _units = [
     'kg',
     'toneladas',
@@ -68,39 +71,68 @@ class _CreateMaterialExitPageState
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final exit = MaterialExit(
-      id: const Uuid().v4(),
-      projectId: widget.projectId,
-      date: _selectedDate,
-      materialName: _materialController.text.trim(),
-      quantity: double.parse(_qtyController.text),
-      unit: _selectedUnit,
-      destination: _destinationController.text.trim(),
-      responsible: _responsibleController.text.trim().isEmpty
-          ? null
-          : _responsibleController.text.trim(),
-      observations: _obsController.text.trim().isEmpty
-          ? null
-          : _obsController.text.trim(),
-      createdAt: DateTime.now(),
-      syncStatus: SyncStatus.pending,
-    );
+    final repository = ref.read(materialExitRepositoryProvider);
+    final responsible = _responsibleController.text.trim().isEmpty
+        ? null
+        : _responsibleController.text.trim();
+    final observations = _obsController.text.trim().isEmpty
+        ? null
+        : _obsController.text.trim();
 
-    await ref.read(materialExitRepositoryProvider).addExit(exit);
+    if (widget.isEditing) {
+      final existing = widget.exit!;
+      final updated = MaterialExit(
+        id: existing.id,
+        projectId: existing.projectId,
+        date: _selectedDate,
+        materialName: _materialController.text.trim(),
+        quantity: double.parse(_qtyController.text),
+        unit: _selectedUnit,
+        destination: _destinationController.text.trim(),
+        responsible: responsible,
+        observations: observations,
+        createdAt: existing.createdAt,
+        createdBy: existing.createdBy,
+        syncStatus: SyncStatus.pending,
+      );
+      await repository.updateExit(updated);
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Salida actualizada correctamente")),
+      );
+    } else {
+      final exit = MaterialExit(
+        id: const Uuid().v4(),
+        projectId: widget.projectId,
+        date: _selectedDate,
+        materialName: _materialController.text.trim(),
+        quantity: double.parse(_qtyController.text),
+        unit: _selectedUnit,
+        destination: _destinationController.text.trim(),
+        responsible: responsible,
+        observations: observations,
+        createdAt: DateTime.now(),
+        syncStatus: SyncStatus.pending,
+      );
+      await repository.addExit(exit);
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Salida registrada correctamente")),
+      );
+    }
 
     if (!mounted) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Salida registrada correctamente")),
-    );
-
     Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Registrar salida")),
+      appBar: AppBar(
+        title: Text(widget.isEditing ? "Editar salida" : "Registrar salida"),
+      ),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -187,7 +219,7 @@ class _CreateMaterialExitPageState
             const SizedBox(height: 32),
             ElevatedButton(
               onPressed: _save,
-              child: const Text("REGISTRAR SALIDA"),
+              child: Text(widget.isEditing ? "GUARDAR CAMBIOS" : "REGISTRAR SALIDA"),
             ),
           ],
         ),

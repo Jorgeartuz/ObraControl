@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+
 import '../sync/domain/sync_status.dart';
 
 part 'local_database.g.dart';
@@ -15,7 +16,8 @@ class SyncQueue extends Table {
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   IntColumn get retryCount => integer().withDefault(const Constant(0))();
   TextColumn get lastError => text().nullable()();
-  IntColumn get syncStatus => integer().map(const EnumIndexConverter<SyncStatus>(SyncStatus.values))();
+  IntColumn get syncStatus =>
+      integer().map(const EnumIndexConverter<SyncStatus>(SyncStatus.values))();
 }
 
 @DataClassName('Project')
@@ -42,7 +44,9 @@ class DailyRecords extends Table {
   TextColumn get observations => text().nullable()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
-  IntColumn get syncStatus => integer().map(const EnumIndexConverter<SyncStatus>(SyncStatus.values))();
+  TextColumn get createdBy => text().nullable()();
+  IntColumn get syncStatus =>
+      integer().map(const EnumIndexConverter<SyncStatus>(SyncStatus.values))();
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -58,7 +62,9 @@ class MaterialEntries extends Table {
   TextColumn get supplier => text().nullable()();
   TextColumn get observations => text().nullable()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
-  IntColumn get syncStatus => integer().map(const EnumIndexConverter<SyncStatus>(SyncStatus.values))();
+  TextColumn get createdBy => text().nullable()();
+  IntColumn get syncStatus =>
+      integer().map(const EnumIndexConverter<SyncStatus>(SyncStatus.values))();
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -75,7 +81,9 @@ class MaterialExits extends Table {
   TextColumn get responsible => text().nullable()();
   TextColumn get observations => text().nullable()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
-  IntColumn get syncStatus => integer().map(const EnumIndexConverter<SyncStatus>(SyncStatus.values))();
+  TextColumn get createdBy => text().nullable()();
+  IntColumn get syncStatus =>
+      integer().map(const EnumIndexConverter<SyncStatus>(SyncStatus.values))();
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -88,7 +96,9 @@ class Machinery extends Table {
   TextColumn get type => text().nullable()();
   TextColumn get description => text().nullable()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
-  IntColumn get syncStatus => integer().map(const EnumIndexConverter<SyncStatus>(SyncStatus.values))();
+  TextColumn get createdBy => text().nullable()();
+  IntColumn get syncStatus =>
+      integer().map(const EnumIndexConverter<SyncStatus>(SyncStatus.values))();
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -98,26 +108,31 @@ class DailyRecordPhotos extends Table {
   TextColumn get id => text()();
   TextColumn get dailyRecordId => text()();
   TextColumn get localPath => text()();
+  TextColumn get storagePath => text().nullable()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
-  IntColumn get syncStatus => integer().map(const EnumIndexConverter<SyncStatus>(SyncStatus.values))();
+  TextColumn get createdBy => text().nullable()();
+  IntColumn get syncStatus =>
+      integer().map(const EnumIndexConverter<SyncStatus>(SyncStatus.values))();
   @override
   Set<Column> get primaryKey => {id};
 }
 
-@DriftDatabase(tables: [
-  SyncQueue,
-  Projects,
-  DailyRecords,
-  MaterialEntries,
-  MaterialExits,
-  Machinery,
-  DailyRecordPhotos
-])
+@DriftDatabase(
+  tables: [
+    SyncQueue,
+    Projects,
+    DailyRecords,
+    MaterialEntries,
+    MaterialExits,
+    Machinery,
+    DailyRecordPhotos,
+  ],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -130,11 +145,26 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(machinery);
       }
       if (from < 4) await m.createTable(dailyRecordPhotos);
-      if (from < 5) await m.addColumn(materialEntries, materialEntries.supplier);
-      if (from < 6) await m.addColumn(materialExits, materialExits.responsible);
-      if (from < 7) await m.addColumn(projects, projects.createdBy);
+      if (from < 5) {
+        await m.addColumn(materialEntries, materialEntries.supplier);
+      }
+      if (from < 6) {
+        await m.addColumn(materialExits, materialExits.responsible);
+      }
+      if (from < 7) {
+        await m.addColumn(projects, projects.createdBy);
+      }
+      if (from < 8) {
+        await m.addColumn(dailyRecords, dailyRecords.createdBy);
+        await m.addColumn(materialEntries, materialEntries.createdBy);
+        await m.addColumn(materialExits, materialExits.createdBy);
+        await m.addColumn(machinery, machinery.createdBy);
+        await m.addColumn(dailyRecordPhotos, dailyRecordPhotos.storagePath);
+        await m.addColumn(dailyRecordPhotos, dailyRecordPhotos.createdBy);
+      }
     },
   );
 
-  static QueryExecutor _openConnection() => driftDatabase(name: 'obra_control_db');
+  static QueryExecutor _openConnection() =>
+      driftDatabase(name: 'obra_control_db');
 }
