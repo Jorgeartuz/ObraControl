@@ -20,6 +20,10 @@ class MachineryRepository {
             ..orderBy([(table) => OrderingTerm.asc(table.name)]))
           .watch();
 
+  Stream<Machine?> watchMachine(String id) => (_db.select(
+    _db.machinery,
+  )..where((table) => table.id.equals(id))).watchSingleOrNull();
+
   Future<void> addMachine(Machine machine) async {
     final user = _requireUser();
     await _save(
@@ -111,4 +115,8 @@ final Provider<MachineryRepository> machineryRepositoryProvider =
 final machineryStreamProvider = StreamProvider.family<List<Machine>, String>(
   (ref, projectId) =>
       ref.watch(machineryRepositoryProvider).watchMachinery(projectId),
+);
+
+final machineProvider = StreamProvider.family<Machine?, String>(
+  (ref, id) => ref.watch(machineryRepositoryProvider).watchMachine(id),
 );

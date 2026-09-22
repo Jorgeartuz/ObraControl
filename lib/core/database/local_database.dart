@@ -117,6 +117,45 @@ class DailyRecordPhotos extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+@DataClassName('MachineryUsageLog')
+class MachineryUsageLogs extends Table {
+  TextColumn get id => text()();
+  TextColumn get machineId => text()();
+  TextColumn get projectId => text()();
+  DateTimeColumn get date => dateTime()();
+  RealColumn get horometerStart => real()();
+  RealColumn get horometerEnd => real()();
+  RealColumn get hoursWorked => real()();
+  TextColumn get observations => text().nullable()();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  TextColumn get createdBy => text().nullable()();
+  IntColumn get syncStatus =>
+      integer().map(const EnumIndexConverter<SyncStatus>(SyncStatus.values))();
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DataClassName('DumpTruckLog')
+class DumpTruckLogs extends Table {
+  TextColumn get id => text()();
+  TextColumn get projectId => text()();
+  TextColumn get plate => text()();
+  TextColumn get driver => text()();
+  TextColumn get material => text()();
+  RealColumn get quantity => real()();
+  TextColumn get unit => text()();
+  DateTimeColumn get date => dateTime()();
+  DateTimeColumn get entryTime => dateTime()();
+  DateTimeColumn get exitTime => dateTime().nullable()();
+  TextColumn get observations => text().nullable()();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  TextColumn get createdBy => text().nullable()();
+  IntColumn get syncStatus =>
+      integer().map(const EnumIndexConverter<SyncStatus>(SyncStatus.values))();
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DriftDatabase(
   tables: [
     SyncQueue,
@@ -126,13 +165,15 @@ class DailyRecordPhotos extends Table {
     MaterialExits,
     Machinery,
     DailyRecordPhotos,
+    MachineryUsageLogs,
+    DumpTruckLogs,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -161,6 +202,10 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(machinery, machinery.createdBy);
         await m.addColumn(dailyRecordPhotos, dailyRecordPhotos.storagePath);
         await m.addColumn(dailyRecordPhotos, dailyRecordPhotos.createdBy);
+      }
+      if (from < 9) {
+        await m.createTable(machineryUsageLogs);
+        await m.createTable(dumpTruckLogs);
       }
     },
   );

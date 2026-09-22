@@ -6,6 +6,7 @@ import 'package:obrafcontrol_test/core/database/local_database.dart';
 import 'package:obrafcontrol_test/core/sync/domain/sync_status.dart';
 import 'package:obrafcontrol_test/main.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:uuid/uuid.dart';
 
 import 'photo_storage_service.dart';
 
@@ -50,22 +51,63 @@ class DailyRecordRepository {
       await _db.into(_db.dailyRecords).insert(recordToSave);
       await _queueRecord('create', recordToSave.id, recordToSave);
       for (final tempPath in tempPhotoPaths) {
-        final permanentPath = await _storage.savePhotoPermanently(
-          tempPath,
-          record.id,
+        await _saveLocalPhoto(
+          tempPath: tempPath,
+          record: recordToSave,
+          userId: user.id,
         );
-        final photo = DailyRecordPhoto(
-          id: '${record.id}_${DateTime.now().microsecondsSinceEpoch}',
-          dailyRecordId: record.id,
-          localPath: permanentPath,
-          createdAt: DateTime.now(),
-          createdBy: user.id,
-          syncStatus: SyncStatus.pending,
-        );
-        await _db.into(_db.dailyRecordPhotos).insert(photo);
       }
     });
     await _syncAfterMutation();
+  }
+
+  /// Guarda fotografías adicionales para un registro existente (modo edición),
+  /// sin afectar las fotografías ya guardadas.
+  Future<void> addPhotosToRecord({
+    required DailyRecord record,
+    required List<String> tempPhotoPaths,
+  }) async {
+    if (tempPhotoPaths.isEmpty) return;
+    final user = _requireUser();
+    await _db.transaction(() async {
+      for (final tempPath in tempPhotoPaths) {
+        await _saveLocalPhoto(
+          tempPath: tempPath,
+          record: record,
+          userId: user.id,
+        );
+      }
+    });
+  }
+
+  Future<void> _saveLocalPhoto({
+    required String tempPath,
+    required DailyRecord record,
+    required String userId,
+  }) async {
+    final permanentPath = await _storage.savePhotoPermanently(
+      tempPath: tempPath,
+      projectId: record.projectId,
+      dailyRecordId: record.id,
+      activityDate: record.date,
+    );
+    final photo = DailyRecordPhoto(
+      id: const Uuid().v4(),
+      dailyRecordId: record.id,
+      localPath: permanentPath,
+      createdAt: DateTime.now(),
+      createdBy: userId,
+      syncStatus: SyncStatus.pending,
+    );
+    await _db.into(_db.dailyRecordPhotos).insert(photo);
+  }
+
+  /// Elimina una fotografía ya guardada (local, sin sincronización remota).
+  Future<void> deletePhoto(DailyRecordPhoto photo) async {
+    await (_db.delete(
+      _db.dailyRecordPhotos,
+    )..where((table) => table.id.equals(photo.id))).go();
+    await _storage.deletePhoto(photo.localPath);
   }
 
   Future<void> updateRecord(DailyRecord record) async {
@@ -85,20 +127,23 @@ class DailyRecordRepository {
   }
 
   Future<void> deleteRecord(String id) async {
+    final existing = await (_db.select(
+      _db.dailyRecords,
+    )..where((table) => table.id.equals(id))).getSingleOrNull();
+
     await _db.transaction(() async {
-      final photos = await (_db.select(
+      await (_db.delete(
         _db.dailyRecordPhotos,
-      )..where((table) => table.dailyRecordId.equals(id))).get();
-      for (final photo in photos) {
-        await (_db.delete(
-          _db.dailyRecordPhotos,
-        )..where((table) => table.id.equals(photo.id))).go();
-      }
+      )..where((table) => table.dailyRecordId.equals(id))).go();
       await (_db.delete(
         _db.dailyRecords,
       )..where((table) => table.id.equals(id))).go();
       await _queueRecord('delete', id, null);
     });
+
+    if (existing != null) {
+      await _storage.deleteRecordFolder(existing.projectId, id);
+    }
     await _syncAfterMutation();
   }
 

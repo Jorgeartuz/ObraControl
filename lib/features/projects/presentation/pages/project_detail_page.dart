@@ -9,6 +9,7 @@ import 'daily_records_list_page.dart';
 
 import 'package:obrafcontrol_test/features/material_entries/presentation/pages/material_entries_list_page.dart';
 import 'package:obrafcontrol_test/features/material_exits/presentation/pages/material_exits_list_page.dart';
+import 'package:obrafcontrol_test/features/dump_trucks/presentation/pages/dump_trucks_list_page.dart';
 
 import 'machinery_list_page.dart';
 import 'create_project_page.dart';
@@ -122,6 +123,19 @@ class ProjectDetailPage extends ConsumerWidget {
                               MaterialPageRoute(
                                 builder: (_) =>
                                     MachineryListPage(project: project),
+                              ),
+                            ),
+                          ),
+                          ModuleCard(
+                            title: "Volquetas",
+                            subtitle: "Entrada y salida",
+                            icon: Icons.local_shipping_outlined,
+                            variant: ModuleCardVariant.info,
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    DumpTrucksListPage(project: project),
                               ),
                             ),
                           ),

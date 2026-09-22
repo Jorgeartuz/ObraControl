@@ -4094,6 +4094,1495 @@ class DailyRecordPhotosCompanion extends UpdateCompanion<DailyRecordPhoto> {
   }
 }
 
+class $MachineryUsageLogsTable extends MachineryUsageLogs
+    with TableInfo<$MachineryUsageLogsTable, MachineryUsageLog> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MachineryUsageLogsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _machineIdMeta = const VerificationMeta(
+    'machineId',
+  );
+  @override
+  late final GeneratedColumn<String> machineId = GeneratedColumn<String>(
+    'machine_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _horometerStartMeta = const VerificationMeta(
+    'horometerStart',
+  );
+  @override
+  late final GeneratedColumn<double> horometerStart = GeneratedColumn<double>(
+    'horometer_start',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _horometerEndMeta = const VerificationMeta(
+    'horometerEnd',
+  );
+  @override
+  late final GeneratedColumn<double> horometerEnd = GeneratedColumn<double>(
+    'horometer_end',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _hoursWorkedMeta = const VerificationMeta(
+    'hoursWorked',
+  );
+  @override
+  late final GeneratedColumn<double> hoursWorked = GeneratedColumn<double>(
+    'hours_worked',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _observationsMeta = const VerificationMeta(
+    'observations',
+  );
+  @override
+  late final GeneratedColumn<String> observations = GeneratedColumn<String>(
+    'observations',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<String> createdBy = GeneratedColumn<String>(
+    'created_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<SyncStatus, int> syncStatus =
+      GeneratedColumn<int>(
+        'sync_status',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      ).withConverter<SyncStatus>(
+        $MachineryUsageLogsTable.$convertersyncStatus,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    machineId,
+    projectId,
+    date,
+    horometerStart,
+    horometerEnd,
+    hoursWorked,
+    observations,
+    createdAt,
+    createdBy,
+    syncStatus,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'machinery_usage_logs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MachineryUsageLog> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('machine_id')) {
+      context.handle(
+        _machineIdMeta,
+        machineId.isAcceptableOrUnknown(data['machine_id']!, _machineIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_machineIdMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('horometer_start')) {
+      context.handle(
+        _horometerStartMeta,
+        horometerStart.isAcceptableOrUnknown(
+          data['horometer_start']!,
+          _horometerStartMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_horometerStartMeta);
+    }
+    if (data.containsKey('horometer_end')) {
+      context.handle(
+        _horometerEndMeta,
+        horometerEnd.isAcceptableOrUnknown(
+          data['horometer_end']!,
+          _horometerEndMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_horometerEndMeta);
+    }
+    if (data.containsKey('hours_worked')) {
+      context.handle(
+        _hoursWorkedMeta,
+        hoursWorked.isAcceptableOrUnknown(
+          data['hours_worked']!,
+          _hoursWorkedMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_hoursWorkedMeta);
+    }
+    if (data.containsKey('observations')) {
+      context.handle(
+        _observationsMeta,
+        observations.isAcceptableOrUnknown(
+          data['observations']!,
+          _observationsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MachineryUsageLog map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MachineryUsageLog(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      machineId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}machine_id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}date'],
+      )!,
+      horometerStart: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}horometer_start'],
+      )!,
+      horometerEnd: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}horometer_end'],
+      )!,
+      hoursWorked: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}hours_worked'],
+      )!,
+      observations: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}observations'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_by'],
+      ),
+      syncStatus: $MachineryUsageLogsTable.$convertersyncStatus.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}sync_status'],
+        )!,
+      ),
+    );
+  }
+
+  @override
+  $MachineryUsageLogsTable createAlias(String alias) {
+    return $MachineryUsageLogsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<SyncStatus, int, int> $convertersyncStatus =
+      const EnumIndexConverter<SyncStatus>(SyncStatus.values);
+}
+
+class MachineryUsageLog extends DataClass
+    implements Insertable<MachineryUsageLog> {
+  final String id;
+  final String machineId;
+  final String projectId;
+  final DateTime date;
+  final double horometerStart;
+  final double horometerEnd;
+  final double hoursWorked;
+  final String? observations;
+  final DateTime createdAt;
+  final String? createdBy;
+  final SyncStatus syncStatus;
+  const MachineryUsageLog({
+    required this.id,
+    required this.machineId,
+    required this.projectId,
+    required this.date,
+    required this.horometerStart,
+    required this.horometerEnd,
+    required this.hoursWorked,
+    this.observations,
+    required this.createdAt,
+    this.createdBy,
+    required this.syncStatus,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['machine_id'] = Variable<String>(machineId);
+    map['project_id'] = Variable<String>(projectId);
+    map['date'] = Variable<DateTime>(date);
+    map['horometer_start'] = Variable<double>(horometerStart);
+    map['horometer_end'] = Variable<double>(horometerEnd);
+    map['hours_worked'] = Variable<double>(hoursWorked);
+    if (!nullToAbsent || observations != null) {
+      map['observations'] = Variable<String>(observations);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<String>(createdBy);
+    }
+    {
+      map['sync_status'] = Variable<int>(
+        $MachineryUsageLogsTable.$convertersyncStatus.toSql(syncStatus),
+      );
+    }
+    return map;
+  }
+
+  MachineryUsageLogsCompanion toCompanion(bool nullToAbsent) {
+    return MachineryUsageLogsCompanion(
+      id: Value(id),
+      machineId: Value(machineId),
+      projectId: Value(projectId),
+      date: Value(date),
+      horometerStart: Value(horometerStart),
+      horometerEnd: Value(horometerEnd),
+      hoursWorked: Value(hoursWorked),
+      observations: observations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(observations),
+      createdAt: Value(createdAt),
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
+      syncStatus: Value(syncStatus),
+    );
+  }
+
+  factory MachineryUsageLog.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MachineryUsageLog(
+      id: serializer.fromJson<String>(json['id']),
+      machineId: serializer.fromJson<String>(json['machineId']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      date: serializer.fromJson<DateTime>(json['date']),
+      horometerStart: serializer.fromJson<double>(json['horometerStart']),
+      horometerEnd: serializer.fromJson<double>(json['horometerEnd']),
+      hoursWorked: serializer.fromJson<double>(json['hoursWorked']),
+      observations: serializer.fromJson<String?>(json['observations']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      createdBy: serializer.fromJson<String?>(json['createdBy']),
+      syncStatus: $MachineryUsageLogsTable.$convertersyncStatus.fromJson(
+        serializer.fromJson<int>(json['syncStatus']),
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'machineId': serializer.toJson<String>(machineId),
+      'projectId': serializer.toJson<String>(projectId),
+      'date': serializer.toJson<DateTime>(date),
+      'horometerStart': serializer.toJson<double>(horometerStart),
+      'horometerEnd': serializer.toJson<double>(horometerEnd),
+      'hoursWorked': serializer.toJson<double>(hoursWorked),
+      'observations': serializer.toJson<String?>(observations),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'createdBy': serializer.toJson<String?>(createdBy),
+      'syncStatus': serializer.toJson<int>(
+        $MachineryUsageLogsTable.$convertersyncStatus.toJson(syncStatus),
+      ),
+    };
+  }
+
+  MachineryUsageLog copyWith({
+    String? id,
+    String? machineId,
+    String? projectId,
+    DateTime? date,
+    double? horometerStart,
+    double? horometerEnd,
+    double? hoursWorked,
+    Value<String?> observations = const Value.absent(),
+    DateTime? createdAt,
+    Value<String?> createdBy = const Value.absent(),
+    SyncStatus? syncStatus,
+  }) => MachineryUsageLog(
+    id: id ?? this.id,
+    machineId: machineId ?? this.machineId,
+    projectId: projectId ?? this.projectId,
+    date: date ?? this.date,
+    horometerStart: horometerStart ?? this.horometerStart,
+    horometerEnd: horometerEnd ?? this.horometerEnd,
+    hoursWorked: hoursWorked ?? this.hoursWorked,
+    observations: observations.present ? observations.value : this.observations,
+    createdAt: createdAt ?? this.createdAt,
+    createdBy: createdBy.present ? createdBy.value : this.createdBy,
+    syncStatus: syncStatus ?? this.syncStatus,
+  );
+  MachineryUsageLog copyWithCompanion(MachineryUsageLogsCompanion data) {
+    return MachineryUsageLog(
+      id: data.id.present ? data.id.value : this.id,
+      machineId: data.machineId.present ? data.machineId.value : this.machineId,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      date: data.date.present ? data.date.value : this.date,
+      horometerStart: data.horometerStart.present
+          ? data.horometerStart.value
+          : this.horometerStart,
+      horometerEnd: data.horometerEnd.present
+          ? data.horometerEnd.value
+          : this.horometerEnd,
+      hoursWorked: data.hoursWorked.present
+          ? data.hoursWorked.value
+          : this.hoursWorked,
+      observations: data.observations.present
+          ? data.observations.value
+          : this.observations,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
+      syncStatus: data.syncStatus.present
+          ? data.syncStatus.value
+          : this.syncStatus,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MachineryUsageLog(')
+          ..write('id: $id, ')
+          ..write('machineId: $machineId, ')
+          ..write('projectId: $projectId, ')
+          ..write('date: $date, ')
+          ..write('horometerStart: $horometerStart, ')
+          ..write('horometerEnd: $horometerEnd, ')
+          ..write('hoursWorked: $hoursWorked, ')
+          ..write('observations: $observations, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('syncStatus: $syncStatus')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    machineId,
+    projectId,
+    date,
+    horometerStart,
+    horometerEnd,
+    hoursWorked,
+    observations,
+    createdAt,
+    createdBy,
+    syncStatus,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MachineryUsageLog &&
+          other.id == this.id &&
+          other.machineId == this.machineId &&
+          other.projectId == this.projectId &&
+          other.date == this.date &&
+          other.horometerStart == this.horometerStart &&
+          other.horometerEnd == this.horometerEnd &&
+          other.hoursWorked == this.hoursWorked &&
+          other.observations == this.observations &&
+          other.createdAt == this.createdAt &&
+          other.createdBy == this.createdBy &&
+          other.syncStatus == this.syncStatus);
+}
+
+class MachineryUsageLogsCompanion extends UpdateCompanion<MachineryUsageLog> {
+  final Value<String> id;
+  final Value<String> machineId;
+  final Value<String> projectId;
+  final Value<DateTime> date;
+  final Value<double> horometerStart;
+  final Value<double> horometerEnd;
+  final Value<double> hoursWorked;
+  final Value<String?> observations;
+  final Value<DateTime> createdAt;
+  final Value<String?> createdBy;
+  final Value<SyncStatus> syncStatus;
+  final Value<int> rowid;
+  const MachineryUsageLogsCompanion({
+    this.id = const Value.absent(),
+    this.machineId = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.date = const Value.absent(),
+    this.horometerStart = const Value.absent(),
+    this.horometerEnd = const Value.absent(),
+    this.hoursWorked = const Value.absent(),
+    this.observations = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MachineryUsageLogsCompanion.insert({
+    required String id,
+    required String machineId,
+    required String projectId,
+    required DateTime date,
+    required double horometerStart,
+    required double horometerEnd,
+    required double hoursWorked,
+    this.observations = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
+    required SyncStatus syncStatus,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       machineId = Value(machineId),
+       projectId = Value(projectId),
+       date = Value(date),
+       horometerStart = Value(horometerStart),
+       horometerEnd = Value(horometerEnd),
+       hoursWorked = Value(hoursWorked),
+       syncStatus = Value(syncStatus);
+  static Insertable<MachineryUsageLog> custom({
+    Expression<String>? id,
+    Expression<String>? machineId,
+    Expression<String>? projectId,
+    Expression<DateTime>? date,
+    Expression<double>? horometerStart,
+    Expression<double>? horometerEnd,
+    Expression<double>? hoursWorked,
+    Expression<String>? observations,
+    Expression<DateTime>? createdAt,
+    Expression<String>? createdBy,
+    Expression<int>? syncStatus,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (machineId != null) 'machine_id': machineId,
+      if (projectId != null) 'project_id': projectId,
+      if (date != null) 'date': date,
+      if (horometerStart != null) 'horometer_start': horometerStart,
+      if (horometerEnd != null) 'horometer_end': horometerEnd,
+      if (hoursWorked != null) 'hours_worked': hoursWorked,
+      if (observations != null) 'observations': observations,
+      if (createdAt != null) 'created_at': createdAt,
+      if (createdBy != null) 'created_by': createdBy,
+      if (syncStatus != null) 'sync_status': syncStatus,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MachineryUsageLogsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? machineId,
+    Value<String>? projectId,
+    Value<DateTime>? date,
+    Value<double>? horometerStart,
+    Value<double>? horometerEnd,
+    Value<double>? hoursWorked,
+    Value<String?>? observations,
+    Value<DateTime>? createdAt,
+    Value<String?>? createdBy,
+    Value<SyncStatus>? syncStatus,
+    Value<int>? rowid,
+  }) {
+    return MachineryUsageLogsCompanion(
+      id: id ?? this.id,
+      machineId: machineId ?? this.machineId,
+      projectId: projectId ?? this.projectId,
+      date: date ?? this.date,
+      horometerStart: horometerStart ?? this.horometerStart,
+      horometerEnd: horometerEnd ?? this.horometerEnd,
+      hoursWorked: hoursWorked ?? this.hoursWorked,
+      observations: observations ?? this.observations,
+      createdAt: createdAt ?? this.createdAt,
+      createdBy: createdBy ?? this.createdBy,
+      syncStatus: syncStatus ?? this.syncStatus,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (machineId.present) {
+      map['machine_id'] = Variable<String>(machineId.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (horometerStart.present) {
+      map['horometer_start'] = Variable<double>(horometerStart.value);
+    }
+    if (horometerEnd.present) {
+      map['horometer_end'] = Variable<double>(horometerEnd.value);
+    }
+    if (hoursWorked.present) {
+      map['hours_worked'] = Variable<double>(hoursWorked.value);
+    }
+    if (observations.present) {
+      map['observations'] = Variable<String>(observations.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (createdBy.present) {
+      map['created_by'] = Variable<String>(createdBy.value);
+    }
+    if (syncStatus.present) {
+      map['sync_status'] = Variable<int>(
+        $MachineryUsageLogsTable.$convertersyncStatus.toSql(syncStatus.value),
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MachineryUsageLogsCompanion(')
+          ..write('id: $id, ')
+          ..write('machineId: $machineId, ')
+          ..write('projectId: $projectId, ')
+          ..write('date: $date, ')
+          ..write('horometerStart: $horometerStart, ')
+          ..write('horometerEnd: $horometerEnd, ')
+          ..write('hoursWorked: $hoursWorked, ')
+          ..write('observations: $observations, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DumpTruckLogsTable extends DumpTruckLogs
+    with TableInfo<$DumpTruckLogsTable, DumpTruckLog> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DumpTruckLogsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _plateMeta = const VerificationMeta('plate');
+  @override
+  late final GeneratedColumn<String> plate = GeneratedColumn<String>(
+    'plate',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _driverMeta = const VerificationMeta('driver');
+  @override
+  late final GeneratedColumn<String> driver = GeneratedColumn<String>(
+    'driver',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _materialMeta = const VerificationMeta(
+    'material',
+  );
+  @override
+  late final GeneratedColumn<String> material = GeneratedColumn<String>(
+    'material',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _quantityMeta = const VerificationMeta(
+    'quantity',
+  );
+  @override
+  late final GeneratedColumn<double> quantity = GeneratedColumn<double>(
+    'quantity',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _unitMeta = const VerificationMeta('unit');
+  @override
+  late final GeneratedColumn<String> unit = GeneratedColumn<String>(
+    'unit',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _entryTimeMeta = const VerificationMeta(
+    'entryTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> entryTime = GeneratedColumn<DateTime>(
+    'entry_time',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _exitTimeMeta = const VerificationMeta(
+    'exitTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> exitTime = GeneratedColumn<DateTime>(
+    'exit_time',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _observationsMeta = const VerificationMeta(
+    'observations',
+  );
+  @override
+  late final GeneratedColumn<String> observations = GeneratedColumn<String>(
+    'observations',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<String> createdBy = GeneratedColumn<String>(
+    'created_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<SyncStatus, int> syncStatus =
+      GeneratedColumn<int>(
+        'sync_status',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      ).withConverter<SyncStatus>($DumpTruckLogsTable.$convertersyncStatus);
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    projectId,
+    plate,
+    driver,
+    material,
+    quantity,
+    unit,
+    date,
+    entryTime,
+    exitTime,
+    observations,
+    createdAt,
+    createdBy,
+    syncStatus,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'dump_truck_logs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DumpTruckLog> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('plate')) {
+      context.handle(
+        _plateMeta,
+        plate.isAcceptableOrUnknown(data['plate']!, _plateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_plateMeta);
+    }
+    if (data.containsKey('driver')) {
+      context.handle(
+        _driverMeta,
+        driver.isAcceptableOrUnknown(data['driver']!, _driverMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_driverMeta);
+    }
+    if (data.containsKey('material')) {
+      context.handle(
+        _materialMeta,
+        material.isAcceptableOrUnknown(data['material']!, _materialMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_materialMeta);
+    }
+    if (data.containsKey('quantity')) {
+      context.handle(
+        _quantityMeta,
+        quantity.isAcceptableOrUnknown(data['quantity']!, _quantityMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_quantityMeta);
+    }
+    if (data.containsKey('unit')) {
+      context.handle(
+        _unitMeta,
+        unit.isAcceptableOrUnknown(data['unit']!, _unitMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_unitMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('entry_time')) {
+      context.handle(
+        _entryTimeMeta,
+        entryTime.isAcceptableOrUnknown(data['entry_time']!, _entryTimeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entryTimeMeta);
+    }
+    if (data.containsKey('exit_time')) {
+      context.handle(
+        _exitTimeMeta,
+        exitTime.isAcceptableOrUnknown(data['exit_time']!, _exitTimeMeta),
+      );
+    }
+    if (data.containsKey('observations')) {
+      context.handle(
+        _observationsMeta,
+        observations.isAcceptableOrUnknown(
+          data['observations']!,
+          _observationsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DumpTruckLog map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DumpTruckLog(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      plate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}plate'],
+      )!,
+      driver: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}driver'],
+      )!,
+      material: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}material'],
+      )!,
+      quantity: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}quantity'],
+      )!,
+      unit: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}unit'],
+      )!,
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}date'],
+      )!,
+      entryTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}entry_time'],
+      )!,
+      exitTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}exit_time'],
+      ),
+      observations: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}observations'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_by'],
+      ),
+      syncStatus: $DumpTruckLogsTable.$convertersyncStatus.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}sync_status'],
+        )!,
+      ),
+    );
+  }
+
+  @override
+  $DumpTruckLogsTable createAlias(String alias) {
+    return $DumpTruckLogsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<SyncStatus, int, int> $convertersyncStatus =
+      const EnumIndexConverter<SyncStatus>(SyncStatus.values);
+}
+
+class DumpTruckLog extends DataClass implements Insertable<DumpTruckLog> {
+  final String id;
+  final String projectId;
+  final String plate;
+  final String driver;
+  final String material;
+  final double quantity;
+  final String unit;
+  final DateTime date;
+  final DateTime entryTime;
+  final DateTime? exitTime;
+  final String? observations;
+  final DateTime createdAt;
+  final String? createdBy;
+  final SyncStatus syncStatus;
+  const DumpTruckLog({
+    required this.id,
+    required this.projectId,
+    required this.plate,
+    required this.driver,
+    required this.material,
+    required this.quantity,
+    required this.unit,
+    required this.date,
+    required this.entryTime,
+    this.exitTime,
+    this.observations,
+    required this.createdAt,
+    this.createdBy,
+    required this.syncStatus,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['plate'] = Variable<String>(plate);
+    map['driver'] = Variable<String>(driver);
+    map['material'] = Variable<String>(material);
+    map['quantity'] = Variable<double>(quantity);
+    map['unit'] = Variable<String>(unit);
+    map['date'] = Variable<DateTime>(date);
+    map['entry_time'] = Variable<DateTime>(entryTime);
+    if (!nullToAbsent || exitTime != null) {
+      map['exit_time'] = Variable<DateTime>(exitTime);
+    }
+    if (!nullToAbsent || observations != null) {
+      map['observations'] = Variable<String>(observations);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<String>(createdBy);
+    }
+    {
+      map['sync_status'] = Variable<int>(
+        $DumpTruckLogsTable.$convertersyncStatus.toSql(syncStatus),
+      );
+    }
+    return map;
+  }
+
+  DumpTruckLogsCompanion toCompanion(bool nullToAbsent) {
+    return DumpTruckLogsCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      plate: Value(plate),
+      driver: Value(driver),
+      material: Value(material),
+      quantity: Value(quantity),
+      unit: Value(unit),
+      date: Value(date),
+      entryTime: Value(entryTime),
+      exitTime: exitTime == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exitTime),
+      observations: observations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(observations),
+      createdAt: Value(createdAt),
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
+      syncStatus: Value(syncStatus),
+    );
+  }
+
+  factory DumpTruckLog.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DumpTruckLog(
+      id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      plate: serializer.fromJson<String>(json['plate']),
+      driver: serializer.fromJson<String>(json['driver']),
+      material: serializer.fromJson<String>(json['material']),
+      quantity: serializer.fromJson<double>(json['quantity']),
+      unit: serializer.fromJson<String>(json['unit']),
+      date: serializer.fromJson<DateTime>(json['date']),
+      entryTime: serializer.fromJson<DateTime>(json['entryTime']),
+      exitTime: serializer.fromJson<DateTime?>(json['exitTime']),
+      observations: serializer.fromJson<String?>(json['observations']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      createdBy: serializer.fromJson<String?>(json['createdBy']),
+      syncStatus: $DumpTruckLogsTable.$convertersyncStatus.fromJson(
+        serializer.fromJson<int>(json['syncStatus']),
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'plate': serializer.toJson<String>(plate),
+      'driver': serializer.toJson<String>(driver),
+      'material': serializer.toJson<String>(material),
+      'quantity': serializer.toJson<double>(quantity),
+      'unit': serializer.toJson<String>(unit),
+      'date': serializer.toJson<DateTime>(date),
+      'entryTime': serializer.toJson<DateTime>(entryTime),
+      'exitTime': serializer.toJson<DateTime?>(exitTime),
+      'observations': serializer.toJson<String?>(observations),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'createdBy': serializer.toJson<String?>(createdBy),
+      'syncStatus': serializer.toJson<int>(
+        $DumpTruckLogsTable.$convertersyncStatus.toJson(syncStatus),
+      ),
+    };
+  }
+
+  DumpTruckLog copyWith({
+    String? id,
+    String? projectId,
+    String? plate,
+    String? driver,
+    String? material,
+    double? quantity,
+    String? unit,
+    DateTime? date,
+    DateTime? entryTime,
+    Value<DateTime?> exitTime = const Value.absent(),
+    Value<String?> observations = const Value.absent(),
+    DateTime? createdAt,
+    Value<String?> createdBy = const Value.absent(),
+    SyncStatus? syncStatus,
+  }) => DumpTruckLog(
+    id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
+    plate: plate ?? this.plate,
+    driver: driver ?? this.driver,
+    material: material ?? this.material,
+    quantity: quantity ?? this.quantity,
+    unit: unit ?? this.unit,
+    date: date ?? this.date,
+    entryTime: entryTime ?? this.entryTime,
+    exitTime: exitTime.present ? exitTime.value : this.exitTime,
+    observations: observations.present ? observations.value : this.observations,
+    createdAt: createdAt ?? this.createdAt,
+    createdBy: createdBy.present ? createdBy.value : this.createdBy,
+    syncStatus: syncStatus ?? this.syncStatus,
+  );
+  DumpTruckLog copyWithCompanion(DumpTruckLogsCompanion data) {
+    return DumpTruckLog(
+      id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      plate: data.plate.present ? data.plate.value : this.plate,
+      driver: data.driver.present ? data.driver.value : this.driver,
+      material: data.material.present ? data.material.value : this.material,
+      quantity: data.quantity.present ? data.quantity.value : this.quantity,
+      unit: data.unit.present ? data.unit.value : this.unit,
+      date: data.date.present ? data.date.value : this.date,
+      entryTime: data.entryTime.present ? data.entryTime.value : this.entryTime,
+      exitTime: data.exitTime.present ? data.exitTime.value : this.exitTime,
+      observations: data.observations.present
+          ? data.observations.value
+          : this.observations,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
+      syncStatus: data.syncStatus.present
+          ? data.syncStatus.value
+          : this.syncStatus,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DumpTruckLog(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('plate: $plate, ')
+          ..write('driver: $driver, ')
+          ..write('material: $material, ')
+          ..write('quantity: $quantity, ')
+          ..write('unit: $unit, ')
+          ..write('date: $date, ')
+          ..write('entryTime: $entryTime, ')
+          ..write('exitTime: $exitTime, ')
+          ..write('observations: $observations, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('syncStatus: $syncStatus')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    projectId,
+    plate,
+    driver,
+    material,
+    quantity,
+    unit,
+    date,
+    entryTime,
+    exitTime,
+    observations,
+    createdAt,
+    createdBy,
+    syncStatus,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DumpTruckLog &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.plate == this.plate &&
+          other.driver == this.driver &&
+          other.material == this.material &&
+          other.quantity == this.quantity &&
+          other.unit == this.unit &&
+          other.date == this.date &&
+          other.entryTime == this.entryTime &&
+          other.exitTime == this.exitTime &&
+          other.observations == this.observations &&
+          other.createdAt == this.createdAt &&
+          other.createdBy == this.createdBy &&
+          other.syncStatus == this.syncStatus);
+}
+
+class DumpTruckLogsCompanion extends UpdateCompanion<DumpTruckLog> {
+  final Value<String> id;
+  final Value<String> projectId;
+  final Value<String> plate;
+  final Value<String> driver;
+  final Value<String> material;
+  final Value<double> quantity;
+  final Value<String> unit;
+  final Value<DateTime> date;
+  final Value<DateTime> entryTime;
+  final Value<DateTime?> exitTime;
+  final Value<String?> observations;
+  final Value<DateTime> createdAt;
+  final Value<String?> createdBy;
+  final Value<SyncStatus> syncStatus;
+  final Value<int> rowid;
+  const DumpTruckLogsCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.plate = const Value.absent(),
+    this.driver = const Value.absent(),
+    this.material = const Value.absent(),
+    this.quantity = const Value.absent(),
+    this.unit = const Value.absent(),
+    this.date = const Value.absent(),
+    this.entryTime = const Value.absent(),
+    this.exitTime = const Value.absent(),
+    this.observations = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DumpTruckLogsCompanion.insert({
+    required String id,
+    required String projectId,
+    required String plate,
+    required String driver,
+    required String material,
+    required double quantity,
+    required String unit,
+    required DateTime date,
+    required DateTime entryTime,
+    this.exitTime = const Value.absent(),
+    this.observations = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.createdBy = const Value.absent(),
+    required SyncStatus syncStatus,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       projectId = Value(projectId),
+       plate = Value(plate),
+       driver = Value(driver),
+       material = Value(material),
+       quantity = Value(quantity),
+       unit = Value(unit),
+       date = Value(date),
+       entryTime = Value(entryTime),
+       syncStatus = Value(syncStatus);
+  static Insertable<DumpTruckLog> custom({
+    Expression<String>? id,
+    Expression<String>? projectId,
+    Expression<String>? plate,
+    Expression<String>? driver,
+    Expression<String>? material,
+    Expression<double>? quantity,
+    Expression<String>? unit,
+    Expression<DateTime>? date,
+    Expression<DateTime>? entryTime,
+    Expression<DateTime>? exitTime,
+    Expression<String>? observations,
+    Expression<DateTime>? createdAt,
+    Expression<String>? createdBy,
+    Expression<int>? syncStatus,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (plate != null) 'plate': plate,
+      if (driver != null) 'driver': driver,
+      if (material != null) 'material': material,
+      if (quantity != null) 'quantity': quantity,
+      if (unit != null) 'unit': unit,
+      if (date != null) 'date': date,
+      if (entryTime != null) 'entry_time': entryTime,
+      if (exitTime != null) 'exit_time': exitTime,
+      if (observations != null) 'observations': observations,
+      if (createdAt != null) 'created_at': createdAt,
+      if (createdBy != null) 'created_by': createdBy,
+      if (syncStatus != null) 'sync_status': syncStatus,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DumpTruckLogsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? projectId,
+    Value<String>? plate,
+    Value<String>? driver,
+    Value<String>? material,
+    Value<double>? quantity,
+    Value<String>? unit,
+    Value<DateTime>? date,
+    Value<DateTime>? entryTime,
+    Value<DateTime?>? exitTime,
+    Value<String?>? observations,
+    Value<DateTime>? createdAt,
+    Value<String?>? createdBy,
+    Value<SyncStatus>? syncStatus,
+    Value<int>? rowid,
+  }) {
+    return DumpTruckLogsCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      plate: plate ?? this.plate,
+      driver: driver ?? this.driver,
+      material: material ?? this.material,
+      quantity: quantity ?? this.quantity,
+      unit: unit ?? this.unit,
+      date: date ?? this.date,
+      entryTime: entryTime ?? this.entryTime,
+      exitTime: exitTime ?? this.exitTime,
+      observations: observations ?? this.observations,
+      createdAt: createdAt ?? this.createdAt,
+      createdBy: createdBy ?? this.createdBy,
+      syncStatus: syncStatus ?? this.syncStatus,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (plate.present) {
+      map['plate'] = Variable<String>(plate.value);
+    }
+    if (driver.present) {
+      map['driver'] = Variable<String>(driver.value);
+    }
+    if (material.present) {
+      map['material'] = Variable<String>(material.value);
+    }
+    if (quantity.present) {
+      map['quantity'] = Variable<double>(quantity.value);
+    }
+    if (unit.present) {
+      map['unit'] = Variable<String>(unit.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (entryTime.present) {
+      map['entry_time'] = Variable<DateTime>(entryTime.value);
+    }
+    if (exitTime.present) {
+      map['exit_time'] = Variable<DateTime>(exitTime.value);
+    }
+    if (observations.present) {
+      map['observations'] = Variable<String>(observations.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (createdBy.present) {
+      map['created_by'] = Variable<String>(createdBy.value);
+    }
+    if (syncStatus.present) {
+      map['sync_status'] = Variable<int>(
+        $DumpTruckLogsTable.$convertersyncStatus.toSql(syncStatus.value),
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DumpTruckLogsCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('plate: $plate, ')
+          ..write('driver: $driver, ')
+          ..write('material: $material, ')
+          ..write('quantity: $quantity, ')
+          ..write('unit: $unit, ')
+          ..write('date: $date, ')
+          ..write('entryTime: $entryTime, ')
+          ..write('exitTime: $exitTime, ')
+          ..write('observations: $observations, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4107,6 +5596,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $MachineryTable machinery = $MachineryTable(this);
   late final $DailyRecordPhotosTable dailyRecordPhotos =
       $DailyRecordPhotosTable(this);
+  late final $MachineryUsageLogsTable machineryUsageLogs =
+      $MachineryUsageLogsTable(this);
+  late final $DumpTruckLogsTable dumpTruckLogs = $DumpTruckLogsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4119,6 +5611,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     materialExits,
     machinery,
     dailyRecordPhotos,
+    machineryUsageLogs,
+    dumpTruckLogs,
   ];
 }
 
@@ -6141,6 +7635,722 @@ typedef $$DailyRecordPhotosTableProcessedTableManager =
       DailyRecordPhoto,
       PrefetchHooks Function()
     >;
+typedef $$MachineryUsageLogsTableCreateCompanionBuilder =
+    MachineryUsageLogsCompanion Function({
+      required String id,
+      required String machineId,
+      required String projectId,
+      required DateTime date,
+      required double horometerStart,
+      required double horometerEnd,
+      required double hoursWorked,
+      Value<String?> observations,
+      Value<DateTime> createdAt,
+      Value<String?> createdBy,
+      required SyncStatus syncStatus,
+      Value<int> rowid,
+    });
+typedef $$MachineryUsageLogsTableUpdateCompanionBuilder =
+    MachineryUsageLogsCompanion Function({
+      Value<String> id,
+      Value<String> machineId,
+      Value<String> projectId,
+      Value<DateTime> date,
+      Value<double> horometerStart,
+      Value<double> horometerEnd,
+      Value<double> hoursWorked,
+      Value<String?> observations,
+      Value<DateTime> createdAt,
+      Value<String?> createdBy,
+      Value<SyncStatus> syncStatus,
+      Value<int> rowid,
+    });
+
+class $$MachineryUsageLogsTableFilterComposer
+    extends Composer<_$AppDatabase, $MachineryUsageLogsTable> {
+  $$MachineryUsageLogsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get machineId => $composableBuilder(
+    column: $table.machineId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get horometerStart => $composableBuilder(
+    column: $table.horometerStart,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get horometerEnd => $composableBuilder(
+    column: $table.horometerEnd,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get hoursWorked => $composableBuilder(
+    column: $table.hoursWorked,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get observations => $composableBuilder(
+    column: $table.observations,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<SyncStatus, SyncStatus, int> get syncStatus =>
+      $composableBuilder(
+        column: $table.syncStatus,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+}
+
+class $$MachineryUsageLogsTableOrderingComposer
+    extends Composer<_$AppDatabase, $MachineryUsageLogsTable> {
+  $$MachineryUsageLogsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get machineId => $composableBuilder(
+    column: $table.machineId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get horometerStart => $composableBuilder(
+    column: $table.horometerStart,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get horometerEnd => $composableBuilder(
+    column: $table.horometerEnd,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get hoursWorked => $composableBuilder(
+    column: $table.hoursWorked,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get observations => $composableBuilder(
+    column: $table.observations,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MachineryUsageLogsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MachineryUsageLogsTable> {
+  $$MachineryUsageLogsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get machineId =>
+      $composableBuilder(column: $table.machineId, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<double> get horometerStart => $composableBuilder(
+    column: $table.horometerStart,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get horometerEnd => $composableBuilder(
+    column: $table.horometerEnd,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get hoursWorked => $composableBuilder(
+    column: $table.hoursWorked,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get observations => $composableBuilder(
+    column: $table.observations,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SyncStatus, int> get syncStatus =>
+      $composableBuilder(
+        column: $table.syncStatus,
+        builder: (column) => column,
+      );
+}
+
+class $$MachineryUsageLogsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MachineryUsageLogsTable,
+          MachineryUsageLog,
+          $$MachineryUsageLogsTableFilterComposer,
+          $$MachineryUsageLogsTableOrderingComposer,
+          $$MachineryUsageLogsTableAnnotationComposer,
+          $$MachineryUsageLogsTableCreateCompanionBuilder,
+          $$MachineryUsageLogsTableUpdateCompanionBuilder,
+          (
+            MachineryUsageLog,
+            BaseReferences<
+              _$AppDatabase,
+              $MachineryUsageLogsTable,
+              MachineryUsageLog
+            >,
+          ),
+          MachineryUsageLog,
+          PrefetchHooks Function()
+        > {
+  $$MachineryUsageLogsTableTableManager(
+    _$AppDatabase db,
+    $MachineryUsageLogsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MachineryUsageLogsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MachineryUsageLogsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MachineryUsageLogsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> machineId = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<DateTime> date = const Value.absent(),
+                Value<double> horometerStart = const Value.absent(),
+                Value<double> horometerEnd = const Value.absent(),
+                Value<double> hoursWorked = const Value.absent(),
+                Value<String?> observations = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> createdBy = const Value.absent(),
+                Value<SyncStatus> syncStatus = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MachineryUsageLogsCompanion(
+                id: id,
+                machineId: machineId,
+                projectId: projectId,
+                date: date,
+                horometerStart: horometerStart,
+                horometerEnd: horometerEnd,
+                hoursWorked: hoursWorked,
+                observations: observations,
+                createdAt: createdAt,
+                createdBy: createdBy,
+                syncStatus: syncStatus,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String machineId,
+                required String projectId,
+                required DateTime date,
+                required double horometerStart,
+                required double horometerEnd,
+                required double hoursWorked,
+                Value<String?> observations = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> createdBy = const Value.absent(),
+                required SyncStatus syncStatus,
+                Value<int> rowid = const Value.absent(),
+              }) => MachineryUsageLogsCompanion.insert(
+                id: id,
+                machineId: machineId,
+                projectId: projectId,
+                date: date,
+                horometerStart: horometerStart,
+                horometerEnd: horometerEnd,
+                hoursWorked: hoursWorked,
+                observations: observations,
+                createdAt: createdAt,
+                createdBy: createdBy,
+                syncStatus: syncStatus,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MachineryUsageLogsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MachineryUsageLogsTable,
+      MachineryUsageLog,
+      $$MachineryUsageLogsTableFilterComposer,
+      $$MachineryUsageLogsTableOrderingComposer,
+      $$MachineryUsageLogsTableAnnotationComposer,
+      $$MachineryUsageLogsTableCreateCompanionBuilder,
+      $$MachineryUsageLogsTableUpdateCompanionBuilder,
+      (
+        MachineryUsageLog,
+        BaseReferences<
+          _$AppDatabase,
+          $MachineryUsageLogsTable,
+          MachineryUsageLog
+        >,
+      ),
+      MachineryUsageLog,
+      PrefetchHooks Function()
+    >;
+typedef $$DumpTruckLogsTableCreateCompanionBuilder =
+    DumpTruckLogsCompanion Function({
+      required String id,
+      required String projectId,
+      required String plate,
+      required String driver,
+      required String material,
+      required double quantity,
+      required String unit,
+      required DateTime date,
+      required DateTime entryTime,
+      Value<DateTime?> exitTime,
+      Value<String?> observations,
+      Value<DateTime> createdAt,
+      Value<String?> createdBy,
+      required SyncStatus syncStatus,
+      Value<int> rowid,
+    });
+typedef $$DumpTruckLogsTableUpdateCompanionBuilder =
+    DumpTruckLogsCompanion Function({
+      Value<String> id,
+      Value<String> projectId,
+      Value<String> plate,
+      Value<String> driver,
+      Value<String> material,
+      Value<double> quantity,
+      Value<String> unit,
+      Value<DateTime> date,
+      Value<DateTime> entryTime,
+      Value<DateTime?> exitTime,
+      Value<String?> observations,
+      Value<DateTime> createdAt,
+      Value<String?> createdBy,
+      Value<SyncStatus> syncStatus,
+      Value<int> rowid,
+    });
+
+class $$DumpTruckLogsTableFilterComposer
+    extends Composer<_$AppDatabase, $DumpTruckLogsTable> {
+  $$DumpTruckLogsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get plate => $composableBuilder(
+    column: $table.plate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get driver => $composableBuilder(
+    column: $table.driver,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get material => $composableBuilder(
+    column: $table.material,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get unit => $composableBuilder(
+    column: $table.unit,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get entryTime => $composableBuilder(
+    column: $table.entryTime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get exitTime => $composableBuilder(
+    column: $table.exitTime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get observations => $composableBuilder(
+    column: $table.observations,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<SyncStatus, SyncStatus, int> get syncStatus =>
+      $composableBuilder(
+        column: $table.syncStatus,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+}
+
+class $$DumpTruckLogsTableOrderingComposer
+    extends Composer<_$AppDatabase, $DumpTruckLogsTable> {
+  $$DumpTruckLogsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get plate => $composableBuilder(
+    column: $table.plate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get driver => $composableBuilder(
+    column: $table.driver,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get material => $composableBuilder(
+    column: $table.material,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get unit => $composableBuilder(
+    column: $table.unit,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get entryTime => $composableBuilder(
+    column: $table.entryTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get exitTime => $composableBuilder(
+    column: $table.exitTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get observations => $composableBuilder(
+    column: $table.observations,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DumpTruckLogsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DumpTruckLogsTable> {
+  $$DumpTruckLogsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get plate =>
+      $composableBuilder(column: $table.plate, builder: (column) => column);
+
+  GeneratedColumn<String> get driver =>
+      $composableBuilder(column: $table.driver, builder: (column) => column);
+
+  GeneratedColumn<String> get material =>
+      $composableBuilder(column: $table.material, builder: (column) => column);
+
+  GeneratedColumn<double> get quantity =>
+      $composableBuilder(column: $table.quantity, builder: (column) => column);
+
+  GeneratedColumn<String> get unit =>
+      $composableBuilder(column: $table.unit, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get entryTime =>
+      $composableBuilder(column: $table.entryTime, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get exitTime =>
+      $composableBuilder(column: $table.exitTime, builder: (column) => column);
+
+  GeneratedColumn<String> get observations => $composableBuilder(
+    column: $table.observations,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SyncStatus, int> get syncStatus =>
+      $composableBuilder(
+        column: $table.syncStatus,
+        builder: (column) => column,
+      );
+}
+
+class $$DumpTruckLogsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DumpTruckLogsTable,
+          DumpTruckLog,
+          $$DumpTruckLogsTableFilterComposer,
+          $$DumpTruckLogsTableOrderingComposer,
+          $$DumpTruckLogsTableAnnotationComposer,
+          $$DumpTruckLogsTableCreateCompanionBuilder,
+          $$DumpTruckLogsTableUpdateCompanionBuilder,
+          (
+            DumpTruckLog,
+            BaseReferences<_$AppDatabase, $DumpTruckLogsTable, DumpTruckLog>,
+          ),
+          DumpTruckLog,
+          PrefetchHooks Function()
+        > {
+  $$DumpTruckLogsTableTableManager(_$AppDatabase db, $DumpTruckLogsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DumpTruckLogsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DumpTruckLogsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DumpTruckLogsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> plate = const Value.absent(),
+                Value<String> driver = const Value.absent(),
+                Value<String> material = const Value.absent(),
+                Value<double> quantity = const Value.absent(),
+                Value<String> unit = const Value.absent(),
+                Value<DateTime> date = const Value.absent(),
+                Value<DateTime> entryTime = const Value.absent(),
+                Value<DateTime?> exitTime = const Value.absent(),
+                Value<String?> observations = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> createdBy = const Value.absent(),
+                Value<SyncStatus> syncStatus = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DumpTruckLogsCompanion(
+                id: id,
+                projectId: projectId,
+                plate: plate,
+                driver: driver,
+                material: material,
+                quantity: quantity,
+                unit: unit,
+                date: date,
+                entryTime: entryTime,
+                exitTime: exitTime,
+                observations: observations,
+                createdAt: createdAt,
+                createdBy: createdBy,
+                syncStatus: syncStatus,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String projectId,
+                required String plate,
+                required String driver,
+                required String material,
+                required double quantity,
+                required String unit,
+                required DateTime date,
+                required DateTime entryTime,
+                Value<DateTime?> exitTime = const Value.absent(),
+                Value<String?> observations = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> createdBy = const Value.absent(),
+                required SyncStatus syncStatus,
+                Value<int> rowid = const Value.absent(),
+              }) => DumpTruckLogsCompanion.insert(
+                id: id,
+                projectId: projectId,
+                plate: plate,
+                driver: driver,
+                material: material,
+                quantity: quantity,
+                unit: unit,
+                date: date,
+                entryTime: entryTime,
+                exitTime: exitTime,
+                observations: observations,
+                createdAt: createdAt,
+                createdBy: createdBy,
+                syncStatus: syncStatus,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DumpTruckLogsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DumpTruckLogsTable,
+      DumpTruckLog,
+      $$DumpTruckLogsTableFilterComposer,
+      $$DumpTruckLogsTableOrderingComposer,
+      $$DumpTruckLogsTableAnnotationComposer,
+      $$DumpTruckLogsTableCreateCompanionBuilder,
+      $$DumpTruckLogsTableUpdateCompanionBuilder,
+      (
+        DumpTruckLog,
+        BaseReferences<_$AppDatabase, $DumpTruckLogsTable, DumpTruckLog>,
+      ),
+      DumpTruckLog,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -6159,4 +8369,8 @@ class $AppDatabaseManager {
       $$MachineryTableTableManager(_db, _db.machinery);
   $$DailyRecordPhotosTableTableManager get dailyRecordPhotos =>
       $$DailyRecordPhotosTableTableManager(_db, _db.dailyRecordPhotos);
+  $$MachineryUsageLogsTableTableManager get machineryUsageLogs =>
+      $$MachineryUsageLogsTableTableManager(_db, _db.machineryUsageLogs);
+  $$DumpTruckLogsTableTableManager get dumpTruckLogs =>
+      $$DumpTruckLogsTableTableManager(_db, _db.dumpTruckLogs);
 }

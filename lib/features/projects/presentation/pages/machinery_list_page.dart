@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/database/local_database.dart';
 import '../../../machinery/data/machinery_repository.dart';
+import '../../../machinery/presentation/pages/machine_detail_page.dart';
 import 'add_machinery_page.dart';
 
 class MachineryListPage extends ConsumerWidget {
@@ -27,6 +28,12 @@ class MachineryListPage extends ConsumerWidget {
                     leading: const Icon(Icons.engineering, color: Colors.orange),
                     title: Text(machine.name),
                     subtitle: Text(machine.type ?? "Maquinaria de obra"),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => MachineDetailPage(machine: machine),
+                      ),
+                    ),
                     trailing: PopupMenuButton<String>(
                       icon: const Icon(Icons.more_vert),
                       onSelected: (value) {
