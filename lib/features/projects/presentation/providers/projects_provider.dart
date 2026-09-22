@@ -6,3 +6,11 @@ final projectsStreamProvider = StreamProvider<List<Project>>((ref) {
   final repo = ref.watch(projectRepositoryProvider);
   return repo.watchProjects();
 });
+
+final projectStreamProvider = StreamProvider.family<Project?, String>((
+  ref,
+  projectId,
+) {
+  final repo = ref.watch(projectRepositoryProvider);
+  return repo.watchProject(projectId);
+});
