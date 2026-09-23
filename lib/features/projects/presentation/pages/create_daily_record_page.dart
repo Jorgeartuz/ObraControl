@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'package:obrafcontrol_test/core/database/local_database.dart';
+import 'package:obrafcontrol_test/core/presentation/widgets/status_badge.dart';
 import 'package:obrafcontrol_test/core/sync/domain/sync_status.dart';
 import 'package:obrafcontrol_test/features/daily_records/data/daily_record_repository.dart';
 
@@ -274,6 +275,7 @@ class _CreateDailyRecordPageState extends ConsumerState<CreateDailyRecordPage> {
               count: photos.length,
               imageBuilder: (i) => Image.file(File(photos[i].localPath), fit: BoxFit.cover),
               onDelete: (i) => _deleteExistingPhoto(photos[i]),
+              badgeBuilder: (i) => StatusBadge(status: photos[i].syncStatus),
             ),
           ],
         );
@@ -293,6 +295,7 @@ class _CreateDailyRecordPageState extends ConsumerState<CreateDailyRecordPage> {
     required int count,
     required Widget Function(int index) imageBuilder,
     required void Function(int index) onDelete,
+    Widget Function(int index)? badgeBuilder,
   }) {
     return GridView.builder(
       shrinkWrap: true,
@@ -316,6 +319,8 @@ class _CreateDailyRecordPageState extends ConsumerState<CreateDailyRecordPage> {
                 onPressed: () => onDelete(index),
               ),
             ),
+            if (badgeBuilder != null)
+              Positioned(bottom: 4, left: 4, child: badgeBuilder(index)),
           ],
         );
       },

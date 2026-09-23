@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:obrafcontrol_test/core/database/local_database.dart';
+import 'package:obrafcontrol_test/core/presentation/widgets/status_badge.dart';
 import 'package:obrafcontrol_test/features/daily_records/data/daily_record_repository.dart';
 import 'create_daily_record_page.dart';
 
@@ -108,15 +109,10 @@ class _DailyRecordDetailView extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
 
-          FutureBuilder<List<DailyRecordPhoto>>(
-            future: ref.read(dailyRecordRepositoryProvider).getPhotosForRecord(record.id),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              final photos = snapshot.data ?? [];
-
+          ref.watch(dailyRecordPhotosProvider(record.id)).when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, _) => Text("Error al cargar fotografías: $error"),
+            data: (photos) {
               if (photos.isEmpty) {
                 return const Padding(
                   padding: EdgeInsets.all(20.0),
@@ -140,9 +136,19 @@ class _DailyRecordDetailView extends ConsumerWidget {
                     onTap: () => _showFullScreenImage(context, photo.localPath),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: Image.file(
-                        File(photo.localPath),
-                        fit: BoxFit.cover,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Image.file(
+                            File(photo.localPath),
+                            fit: BoxFit.cover,
+                          ),
+                          Positioned(
+                            bottom: 6,
+                            left: 6,
+                            child: StatusBadge(status: photo.syncStatus),
+                          ),
+                        ],
                       ),
                     ),
                   );

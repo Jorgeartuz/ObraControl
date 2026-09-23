@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:obrafcontrol_test/core/database/local_database.dart';
+import 'package:obrafcontrol_test/core/presentation/widgets/status_badge.dart';
 import 'package:obrafcontrol_test/features/machinery/data/machinery_repository.dart';
 import 'package:obrafcontrol_test/features/machinery/data/machinery_usage_repository.dart';
 import 'add_machinery_usage_page.dart';
@@ -114,6 +115,8 @@ class _MachineDetailView extends ConsumerWidget {
                               "${log.hoursWorked.toStringAsFixed(2)} h",
                               style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.deepOrange),
                             ),
+                            const SizedBox(height: 4),
+                            StatusBadge(status: log.syncStatus),
                             IconButton(
                               icon: const Icon(Icons.delete_outline, size: 20),
                               tooltip: 'Eliminar registro',

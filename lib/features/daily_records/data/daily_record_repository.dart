@@ -100,15 +100,32 @@ class DailyRecordRepository {
       syncStatus: SyncStatus.pending,
     );
     await _db.into(_db.dailyRecordPhotos).insert(photo);
+    await _queuePhoto('create', photo, null);
   }
 
-  /// Elimina una fotografía ya guardada (local, sin sincronización remota).
+  /// Elimina una fotografía ya guardada. La copia local se borra siempre;
+  /// si ya se había subido a Supabase Storage, se encola la eliminación
+  /// remota (objeto de Storage + fila en daily_record_photos).
   Future<void> deletePhoto(DailyRecordPhoto photo) async {
     await (_db.delete(
       _db.dailyRecordPhotos,
     )..where((table) => table.id.equals(photo.id))).go();
+    await _queuePhoto('delete', photo, photo.storagePath);
     await _storage.deletePhoto(photo.localPath);
+    await _syncAfterMutation();
   }
+
+  /// Encola en SyncQueue la sincronización (subida o borrado remoto) de una
+  /// fotografía. No sube el archivo aquí: SyncEngine hace la subida real a
+  /// Supabase Storage cuando procesa la cola.
+  Future<void> _queuePhoto(String action, DailyRecordPhoto photo, String? storagePath) =>
+      _queue('daily_record_photo', action, photo.id, {
+        'id': photo.id,
+        'daily_record_id': photo.dailyRecordId,
+        'storage_path': storagePath,
+        'created_at': photo.createdAt.toIso8601String(),
+        'created_by': photo.createdBy,
+      });
 
   Future<void> updateRecord(DailyRecord record) async {
     final existing = await (_db.select(
@@ -130,11 +147,17 @@ class DailyRecordRepository {
     final existing = await (_db.select(
       _db.dailyRecords,
     )..where((table) => table.id.equals(id))).getSingleOrNull();
+    final photos = await (_db.select(
+      _db.dailyRecordPhotos,
+    )..where((table) => table.dailyRecordId.equals(id))).get();
 
     await _db.transaction(() async {
       await (_db.delete(
         _db.dailyRecordPhotos,
       )..where((table) => table.dailyRecordId.equals(id))).go();
+      for (final photo in photos) {
+        await _queuePhoto('delete', photo, photo.storagePath);
+      }
       await (_db.delete(
         _db.dailyRecords,
       )..where((table) => table.id.equals(id))).go();

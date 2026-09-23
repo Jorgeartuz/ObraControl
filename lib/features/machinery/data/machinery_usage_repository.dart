@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:obrafcontrol_test/core/database/local_database.dart';
@@ -8,15 +10,17 @@ import 'package:uuid/uuid.dart';
 
 /// Registro de uso/horómetro de maquinaria.
 ///
-/// NOTA ARQUITECTÓNICA: esta entidad es deliberadamente LOCAL por ahora.
-/// La tabla remota `machinery_usage_logs` todavía no existe en Supabase, así
-/// que no se encola en SyncQueue (evita fallos sistemáticos de sincronización
-/// contra una tabla inexistente). Cuando el backend agregue esa tabla, este
-/// repositorio deberá encolar create/delete igual que el resto de entidades.
+/// Entidad sincronizable: sigue el patrón local transaction -> SyncQueue ->
+/// SyncEngine -> Supabase (tabla remota `machinery_usage_logs`). Esa tabla
+/// remota debe crearse manualmente en Supabase antes de que la sincronización
+/// tenga éxito (ver documentación); mientras tanto, los intentos de sync
+/// fallarán de forma controlada (quedan en SyncQueue con estado `failed`) sin
+/// afectar el resto de entidades ni perder datos locales.
 class MachineryUsageRepository {
-  MachineryUsageRepository(this._db);
+  MachineryUsageRepository(this._db, this._syncAfterMutation);
 
   final AppDatabase _db;
+  final Future<void> Function() _syncAfterMutation;
   final SupabaseClient _client = Supabase.instance.client;
 
   Stream<List<MachineryUsageLog>> watchUsageLogs(String machineId) =>
@@ -56,26 +60,62 @@ class MachineryUsageRepository {
       syncStatus: SyncStatus.pending,
     );
 
-    await _db.into(_db.machineryUsageLogs).insert(log);
+    await _db.transaction(() async {
+      await _db.into(_db.machineryUsageLogs).insert(log);
+      await _queue('create', log.id, log);
+    });
+    await _syncAfterMutation();
   }
 
   Future<void> deleteUsageLog(String id) async {
     _requireUser();
-    await (_db.delete(
-      _db.machineryUsageLogs,
-    )..where((table) => table.id.equals(id))).go();
+    await _db.transaction(() async {
+      await (_db.delete(
+        _db.machineryUsageLogs,
+      )..where((table) => table.id.equals(id))).go();
+      await _queue('delete', id, null);
+    });
+    await _syncAfterMutation();
   }
+
+  Future<void> _queue(String action, String id, MachineryUsageLog? log) => _db
+      .into(_db.syncQueue)
+      .insert(
+        SyncQueueCompanion.insert(
+          entityType: 'machinery_usage_log',
+          entityId: id,
+          action: action,
+          payload: jsonEncode(log == null ? {'id': id} : _payload(log)),
+          syncStatus: SyncStatus.pending,
+        ),
+      );
 
   User _requireUser() {
     final user = _client.auth.currentUser;
     if (user == null) throw StateError('No hay un usuario autenticado.');
     return user;
   }
+
+  Map<String, dynamic> _payload(MachineryUsageLog log) => {
+    'id': log.id,
+    'machine_id': log.machineId,
+    'project_id': log.projectId,
+    'date': log.date.toIso8601String(),
+    'horometer_start': log.horometerStart,
+    'horometer_end': log.horometerEnd,
+    'hours_worked': log.hoursWorked,
+    'observations': log.observations,
+    'created_at': log.createdAt.toIso8601String(),
+    'created_by': log.createdBy,
+  };
 }
 
 final Provider<MachineryUsageRepository> machineryUsageRepositoryProvider =
     Provider<MachineryUsageRepository>(
-      (ref) => MachineryUsageRepository(ref.watch(databaseProvider)),
+      (ref) => MachineryUsageRepository(
+        ref.watch(databaseProvider),
+        () => ref.read(projectSyncCoordinatorProvider).syncIfPossible(),
+      ),
     );
 
 final machineryUsageLogsProvider =
