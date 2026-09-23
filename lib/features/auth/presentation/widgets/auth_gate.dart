@@ -15,7 +15,8 @@ class AuthGate extends ConsumerWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(body: Center(child: CircularProgressIndicator()));
         }
-        final session = snapshot.data?.session;
+        final session =
+            snapshot.data?.session ?? Supabase.instance.client.auth.currentSession;
         if (session != null) {
           return const ProjectsListPage();
         }
