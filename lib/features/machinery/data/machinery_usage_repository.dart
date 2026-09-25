@@ -29,6 +29,12 @@ class MachineryUsageRepository {
             ..orderBy([(table) => OrderingTerm.desc(table.date)]))
           .watch();
 
+  Stream<List<MachineryUsageLog>> watchUsageLogsByProject(String projectId) =>
+      (_db.select(_db.machineryUsageLogs)
+            ..where((table) => table.projectId.equals(projectId))
+            ..orderBy([(table) => OrderingTerm.desc(table.date)]))
+          .watch();
+
   Future<void> addUsageLog({
     required String machineId,
     required String projectId,
@@ -122,4 +128,11 @@ final machineryUsageLogsProvider =
     StreamProvider.family<List<MachineryUsageLog>, String>(
       (ref, machineId) =>
           ref.watch(machineryUsageRepositoryProvider).watchUsageLogs(machineId),
+    );
+
+final machineryUsageLogsByProjectProvider =
+    StreamProvider.family<List<MachineryUsageLog>, String>(
+      (ref, projectId) => ref
+          .watch(machineryUsageRepositoryProvider)
+          .watchUsageLogsByProject(projectId),
     );

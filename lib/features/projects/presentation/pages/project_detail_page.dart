@@ -10,6 +10,8 @@ import 'daily_records_list_page.dart';
 import 'package:obrafcontrol_test/features/material_entries/presentation/pages/material_entries_list_page.dart';
 import 'package:obrafcontrol_test/features/material_exits/presentation/pages/material_exits_list_page.dart';
 import 'package:obrafcontrol_test/features/dump_trucks/presentation/pages/dump_trucks_list_page.dart';
+import 'package:obrafcontrol_test/features/dashboard/presentation/widgets/dashboard_indicators_grid.dart';
+import 'package:obrafcontrol_test/features/dashboard/presentation/widgets/dashboard_activity_list.dart';
 
 import 'machinery_list_page.dart';
 import 'create_project_page.dart';
@@ -65,6 +67,10 @@ class ProjectDetailPage extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildProjectHeader(),
+                      const SectionHeader(title: "Indicadores"),
+                      DashboardIndicatorsGrid(projectId: project.id),
+                      const SectionHeader(title: "Actividad reciente"),
+                      DashboardActivityList(projectId: project.id),
                       const SectionHeader(title: "Módulos de Control"),
                       GridView.count(
                         shrinkWrap: true,
