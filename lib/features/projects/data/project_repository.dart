@@ -15,12 +15,39 @@ class ProjectRepository {
   ProjectRepository(this._db, this._syncAfterMutation);
 
   // --- CRUD LOCAL ---
-  Stream<List<Project>> watchProjects() => _db.select(_db.projects).watch();
+  /// Solo devuelve proyectos propios (`created_by = currentUserId`) o
+  /// compartidos (`id` presente en `project_members` para `currentUserId`).
+  /// El filtro se resuelve en SQLite (subquery correlacionada vía
+  /// `existsQuery`), no en Dart: la UI nunca recibe filas ajenas para
+  /// descartarlas después. El stream se re-emite automáticamente tanto si
+  /// cambia `projects` como si cambia `project_members` (p. ej. tras un
+  /// pull de membresías), porque ambas tablas forman parte de la consulta.
+  Stream<List<Project>> watchProjects(String currentUserId) {
+    final query = _db.select(_db.projects)
+      ..where((p) => _ownsOrIsMember(p, currentUserId));
+    return query.watch();
+  }
 
-  Stream<Project?> watchProject(String id) {
-    return (_db.select(
-      _db.projects,
-    )..where((table) => table.id.equals(id))).watchSingleOrNull();
+  Stream<Project?> watchProject(String id, String currentUserId) {
+    final query = _db.select(_db.projects)
+      ..where((p) => p.id.equals(id) & _ownsOrIsMember(p, currentUserId));
+    return query.watchSingleOrNull();
+  }
+
+  Expression<bool> _ownsOrIsMember(
+    $ProjectsTable p,
+    String currentUserId,
+  ) {
+    final isOwner = p.createdBy.equals(currentUserId);
+    final isMember = existsQuery(
+      _db.selectOnly(_db.projectMembers)
+        ..addColumns([_db.projectMembers.id])
+        ..where(
+          _db.projectMembers.projectId.equalsExp(p.id) &
+              _db.projectMembers.userId.equals(currentUserId),
+        ),
+    );
+    return isOwner | isMember;
   }
 
   Future<void> createProject(Project project) async {

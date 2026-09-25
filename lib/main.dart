@@ -10,6 +10,7 @@ import 'package:obrafcontrol_test/core/sync/project_sync_coordinator.dart';
 import 'package:obrafcontrol_test/core/sync/operational_pull_service.dart';
 import 'package:obrafcontrol_test/core/network/connectivity_service.dart';
 import 'package:obrafcontrol_test/features/projects/data/project_repository.dart';
+import 'package:obrafcontrol_test/features/projects/data/project_members_repository.dart';
 
 // Proveedor de la base de datos
 final databaseProvider = Provider<AppDatabase>((ref) {
@@ -28,6 +29,7 @@ final Provider<ProjectSyncCoordinator> projectSyncCoordinatorProvider =
       (ref) => ProjectSyncCoordinator(
         ref.watch(syncEngineProvider),
         () async {
+          await ref.read(projectMembersRepositoryProvider).pullProjectMembers();
           await ref.read(projectRepositoryProvider).pullProjects();
           await ref.read(operationalPullServiceProvider).pullAll();
         },
@@ -41,6 +43,28 @@ final operationalPullServiceProvider = Provider<OperationalPullService>(
 final authStateChangesProvider = StreamProvider<AuthState>(
   (ref) => Supabase.instance.client.auth.onAuthStateChange,
 );
+
+/// Id del usuario autenticado, reactivo a `authStateChangesProvider`.
+///
+/// A diferencia de leer `Supabase.instance.client.auth.currentUser` una
+/// sola vez (como hacían `ProjectRepository`/`ProfileRepository` antes de
+/// este bloque), este provider se recomputa automáticamente cada vez que
+/// cambia la sesión (login, logout, cambio de cuenta en el mismo
+/// dispositivo), porque depende de `authStateChangesProvider` vía
+/// `ref.watch`. Cualquier provider que a su vez dependa de este (perfil,
+/// listados de proyectos filtrados) se recomputa en cascada — ya no hace
+/// falta invalidar nada manualmente.
+///
+/// Offline-safe: igual que `AuthGate`, si el stream de auth todavía no
+/// emitió ningún evento (o emitió un error), se cae al valor síncrono de
+/// `Supabase.instance.client.auth.currentUser`, que ya refleja la sesión
+/// persistida localmente por `supabase_flutter` sin necesitar red.
+final currentUserIdProvider = Provider<String?>((ref) {
+  final authState = ref.watch(authStateChangesProvider);
+  final sessionUser = authState.valueOrNull?.session?.user;
+  if (sessionUser != null) return sessionUser.id;
+  return Supabase.instance.client.auth.currentUser?.id;
+});
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

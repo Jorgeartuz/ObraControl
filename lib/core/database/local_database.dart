@@ -156,6 +156,22 @@ class DumpTruckLogs extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// Espejo local de `public.project_members` (Supabase). Solo lectura desde
+/// el punto de vista de la app: se llena vía pull (`pullProjectMembers`),
+/// nunca se escribe localmente por acciones del usuario en este bloque
+/// (compartir/gestionar miembros queda fuera de alcance por ahora).
+@DataClassName('ProjectMember')
+class ProjectMembers extends Table {
+  TextColumn get id => text()();
+  TextColumn get projectId => text()();
+  TextColumn get userId => text()();
+  TextColumn get role => text()();
+  TextColumn get invitedBy => text().nullable()();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DriftDatabase(
   tables: [
     SyncQueue,
@@ -167,13 +183,14 @@ class DumpTruckLogs extends Table {
     DailyRecordPhotos,
     MachineryUsageLogs,
     DumpTruckLogs,
+    ProjectMembers,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -206,6 +223,17 @@ class AppDatabase extends _$AppDatabase {
       if (from < 9) {
         await m.createTable(machineryUsageLogs);
         await m.createTable(dumpTruckLogs);
+      }
+      if (from < 10) {
+        await m.createTable(projectMembers);
+        await customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_project_members_project_id '
+          'ON project_members (project_id);',
+        );
+        await customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_project_members_user_id '
+          'ON project_members (user_id);',
+        );
       }
     },
   );
